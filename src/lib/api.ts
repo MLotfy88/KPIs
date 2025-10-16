@@ -39,7 +39,11 @@ export const saveEvaluation = async (evaluation: Omit<Evaluation, 'id' | 'create
     if (supervisorError) console.error('Error fetching supervisor for notification:', supervisorError);
 
     if (data && nurseData && supervisorData) {
-        await notifyNewEvaluation(data.id, nurseData.name, supervisorData);
+        const { data: managers, error: managersError } = await supabase.from('profiles').select('*').eq('role', 'manager');
+        if (managersError) console.error('Error fetching managers for notification:', managersError);
+        if (managers) {
+            await notifyNewEvaluation(data.id, nurseData.name, supervisorData, managers);
+        }
     }
 
     return data;
@@ -121,7 +125,7 @@ export const saveAudit = async (auditData: Omit<Audit, 'id' | 'created_at'>): Pr
   const { data, error } = await supabase.from('audits').insert(auditData).select().single();
   if (error) throw new Error(error.message);
 
-  const { data: evaluationData, error: evalError } = await supabase.from('evaluations').select('nurse_id').eq('id', auditData.evaluation_id).single();
+  const { data: evaluationData, error: evalError } = await supabase.from('evaluations').select('nurse_id, supervisor_id').eq('id', auditData.evaluation_id).single();
   if (evalError) console.error('Error fetching evaluation for notification:', evalError);
 
   const { data: auditorData, error: auditorError } = await supabase.from('profiles').select('*').eq('id', auditData.auditor_id).single();
@@ -132,7 +136,7 @@ export const saveAudit = async (auditData: Omit<Audit, 'id' | 'created_at'>): Pr
     if (nurseError) console.error('Error fetching nurse for notification:', nurseError);
     
     if (nurseData) {
-        await notifyEvaluationAudited(data.id, nurseData.name, auditorData, auditData.decision);
+        await notifyEvaluationAudited(auditData.evaluation_id, nurseData.name, evaluationData.supervisor_id, auditData.decision);
     }
   }
 
@@ -215,7 +219,11 @@ export const awardBadgeToNurse = async (badgeData: Omit<NurseBadge, 'id' | 'awar
   if (badgeError) console.error('Error fetching badge for notification:', badgeError);
 
   if (data && nurseData && badgeInfo) {
-    await notifyBadgeAwarded(badgeData.nurse_id, `${badgeInfo.name} (${badgeData.tier})`, nurseData.name);
+    const { data: managers, error: managersError } = await supabase.from('profiles').select('*').eq('role', 'manager');
+    if (managersError) console.error('Error fetching managers for notification:', managersError);
+    if (managers) {
+        await notifyBadgeAwarded(badgeData.nurse_id, `${badgeInfo.name} (${badgeData.tier})`, nurseData.name, managers);
+    }
   }
 
   return data;
