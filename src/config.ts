@@ -3,6 +3,4 @@
  */
 
 // Switch between 'local' and 'supabase' to change the data source.
-export const MODE: 'local' | 'supabase' = 'local';
-
-export const API_URL = 'http://localhost:3001';
+export const MODE: 'local' | 'supabase' = 'supabase';
