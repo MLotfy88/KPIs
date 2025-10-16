@@ -17,6 +17,9 @@ const Login = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // For debugging purposes
+    console.log('Auth user object:', user);
+
     if (user) {
       if (user.role === 'manager') {
         navigate('/manager/dashboard');

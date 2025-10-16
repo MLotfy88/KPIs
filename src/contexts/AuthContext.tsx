@@ -56,7 +56,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('id', supabaseUser.id)
         .single();
 
-      if (error) throw error;
+      // PGRST116 is the code for "No rows found". This is not a fatal error.
+      // It just means the user has an auth entry but no profile yet.
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
 
       if (data) {
         setUser({
@@ -65,9 +69,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: data.name,
           role: data.role,
         });
+      } else {
+        // If no profile data is found, ensure user is logged out of the app state
+        setUser(null);
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
