@@ -1,0 +1,64 @@
+import * as React from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { 
+  Sidebar, 
+  SidebarHeader, 
+  SidebarContent, 
+  SidebarMenu, 
+  SidebarMenuItem, 
+  SidebarMenuButton 
+} from "@/components/ui/sidebar";
+import { Header } from "@/components/ui/header";
+import { Home, Users, BarChart2, FileCheck, UserCog, Award, Library } from "lucide-react";
+
+interface ManagerLayoutProps {
+  children: React.ReactNode;
+}
+
+const ManagerLayout: React.FC<ManagerLayoutProps> = ({ children }) => {
+  const location = useLocation();
+
+  const navLinks = [
+    { href: "/manager/dashboard", label: "لوحة التحكم", icon: <Home /> },
+    { href: "/manager/nurses", label: "فريق التمريض", icon: <Users /> },
+    { href: "/manager/supervisors", label: "إدارة المشرفين", icon: <UserCog /> },
+    { href: "/manager/audits", label: "المراجعات العشوائية", icon: <FileCheck /> },
+    { href: "/manager/reports", label: "التقارير", icon: <BarChart2 /> },
+    { href: "/manager/badges", label: "إدارة الشارات", icon: <Award /> },
+    { href: "/all-badges", label: "مكتبة الشارات", icon: <Library /> },
+  ];
+
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar>
+        <SidebarHeader>
+          <h1 className="text-2xl font-bold text-center">أداء</h1>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarMenu>
+            {navLinks.map((link) => (
+              <SidebarMenuItem key={link.href}>
+                <NavLink to={link.href}>
+                  {({ isActive }) => (
+                    <SidebarMenuButton isActive={isActive}>
+                      {link.icon}
+                      <span>{link.label}</span>
+                    </SidebarMenuButton>
+                  )}
+                </NavLink>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+      <div className="flex-1">
+        <Header />
+        <main className="p-8">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export { ManagerLayout };

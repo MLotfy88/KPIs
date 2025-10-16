@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<title>نموذج المراجعة العشوائية (Spot Check Audit) - تمريض القسطرة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Page */
+@page { size: A4 portrait; margin: 0; }
+html,body {
+  width:210mm; height:297mm; margin:0; padding:0;
+  font-family: 'Cairo', sans-serif; font-weight:700;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  background:#fff; color:#000;
+  box-sizing: border-box;
+}
+
+/* Sheet area: small internal safe padding to avoid unprintable edges */
+.sheet {
+  width:210mm; height:297mm;
+  padding:8mm 8mm 8mm 8mm;
+  box-sizing:border-box;
+  display:flex; flex-direction:column;
+}
+
+/* Header */
+.header {
+  text-align:center;
+  background:#c0c0c0;
+  padding:8px 6px;
+  border-radius:4px;
+  font-size:16px;
+  margin-bottom:8px;
+  border: 1px solid #a0a0a0;
+}
+
+/* Info table */
+table.infotbl {
+  width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px;
+}
+table.infotbl td {
+  border:1px solid #9b9b9b; padding:8px 10px; background:#fbfbfb;
+}
+table.infotbl .label {
+  font-weight: 700;
+  width: 180px; /* Fixed width for labels */
+  background-color: #efefef;
+}
+
+/* Audit Section */
+.audit-section {
+  border:1px solid #c7c7c7;
+  border-radius:4px;
+  padding:12px;
+  margin-bottom:10px;
+  background:#f9f9f9;
+}
+.audit-title {
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:10px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #444;
+}
+
+/* Form Fields */
+.form-field {
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.form-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+.form-field .input-area {
+  background:#fff;
+  border:1px dashed #aaa;
+  min-height: 40px;
+  border-radius: 3px;
+  padding: 8px;
+}
+.form-field textarea.input-area {
+  width: calc(100% - 20px);
+  height: 120px;
+  resize: vertical;
+}
+.checkbox-group {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    padding: 10px;
+}
+.checkbox-item {
+    font-size: 13px;
+}
+
+/* Footer */
+.footer {
+  font-size:12px;
+  margin-top:auto;
+  text-align:left;
+  padding-top:10px;
+  border-top: 1px solid #ccc;
+}
+
+/* Print adjustments */
+@media print {
+  html,body { background:#fff; }
+  .sheet { padding:6mm 6mm 6mm 6mm; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="header">نموذج المراجعة العشوائية (Spot Check Audit)</div>
+
+    <table class="infotbl" role="presentation">
+      <tr>
+        <td class="label">اسم الممرض الخاضع للمراجعة:</td>
+        <td>....................................................................</td>
+      </tr>
+      <tr>
+        <td class="label">اسم المشرف (صاحب التقييم):</td>
+        <td>....................................................................</td>
+      </tr>
+      <tr>
+        <td class="label">اسم المدقق (مدير الوحدة):</td>
+        <td>....................................................................</td>
+      </tr>
+       <tr>
+        <td class="label">تاريخ المراجعة:</td>
+        <td>........ / ........ / ................</td>
+      </tr>
+    </table>
+
+    <div class="audit-section">
+        <div class="audit-title">تفاصيل المراجعة</div>
+        <div class="form-field">
+            <label>1. البنود التي تم التحقق منها (مثال: بند 1-مكافحة العدوى، بند 23-دقة الشيت):</label>
+            <div class="input-area"></div>
+        </div>
+        <div class="form-field">
+            <label>2. طريقة التحقق (مثال: ملاحظة مباشرة، مراجعة الشيتات الأصلية، سؤال المريض):</label>
+            <div class="input-area"></div>
+        </div>
+        <div class="form-field">
+            <label>3. نتيجة المراجعة:</label>
+            <div class="input-area checkbox-group">
+                <span class="checkbox-item">☐ مطابقة لتقييم المشرف</span>
+                <span class="checkbox-item">☐ غير مطابقة لتقييم المشرف</span>
+            </div>
+        </div>
+         <div class="form-field">
+            <label>4. ملاحظات تفصيلية وأدلة (في حال "غير مطابقة" يجب إرفاق دليل مثل صورة من الشيت):</label>
+            <textarea class="input-area"></textarea>
+        </div>
+    </div>
+    
+    <div class="audit-section">
+        <div class="audit-title">القرار والإجراء المتخذ</div>
+         <div class="form-field">
+            <label>القرار النهائي:</label>
+            <div class="input-area checkbox-group">
+                <span class="checkbox-item">☐ اعتماد درجة المشرف كما هي.</span>
+                <span class="checkbox-item">☐ تعديل الدرجة في سجل التقييم.</span>
+                <span class="checkbox-item">☐ إصدار ملاحظة للمشرف.</span>
+            </div>
+        </div>
+        <div class="form-field">
+            <label>تفاصيل إضافية حول الإجراء:</label>
+            <div class="input-area"></div>
+        </div>
+    </div>
+
+
+    <div class="footer">
+      توقيع المدقق: .....................................................
+    </div>
+  </div>
+</body>
+</html>

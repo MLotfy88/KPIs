@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<title>نموذج التقييم الأسبوعي - تمريض وحدة القسطرة (نهائي A4)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Page */
+@page { size: A4 portrait; margin: 0; }
+html,body {
+  width:210mm; height:297mm; margin:0; padding:0;
+  font-family: 'Cairo', sans-serif; font-weight:700;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  background:#fff; color:#000;
+  box-sizing: border-box;
+}
+
+/* Sheet area: small internal safe padding to avoid unprintable edges */
+.sheet {
+  width:210mm; height:297mm;
+  padding:6mm 6mm 6mm 6mm;
+  box-sizing:border-box;
+  display:flex; flex-direction:column;
+}
+
+/* Header */
+.header {
+  text-align:center;
+  background:#c0c0c0;
+  padding:6px 4px;
+  border-radius:3px;
+  font-size:15px;
+  margin-bottom:6px;
+}
+
+/* Info table */
+table.infotbl {
+  width:100%; border-collapse:collapse; font-size:11px; margin-bottom:6px;
+}
+table.infotbl td {
+  border:1px solid #9b9b9b; padding:5px 6px; background:#fbfbfb;
+}
+
+/* Blocks */
+.block { background:#efefef; border:1px solid #c7c7c7; border-radius:3px; padding:6px; margin-bottom:5px; page-break-inside:avoid; }
+.block.alt { background:#e8e8e8; }
+
+/* Question title */
+.qtitle { font-size:12.2px; margin-bottom:4px; }
+
+/* Rating table */
+table.rating { width:100%; border-collapse:collapse; font-size:10.3px; margin-bottom:4px; }
+table.rating th, table.rating td { border:1px solid #bdbdbd; padding:4px 6px; text-align:center; vertical-align:middle; }
+
+/* Grade header cell: dark bg with white number; beside it a white circle for marking */
+.grade-header { background:#444; color:#fff; padding:4px; }
+.grade-wrap { display:flex; align-items:center; justify-content:center; gap:6px; }
+.grade-badge {
+  min-width:22px; height:18px; background:#444; color:#fff;
+  display:inline-flex; align-items:center; justify-content:center;
+  border-radius:3px; font-size:12px; font-weight:700;
+}
+.mark-circle {
+  width:14px; height:14px; border:2px solid #000; border-radius:50%;
+  background:#fff; display:inline-block; box-sizing:border-box;
+}
+
+/* Descriptions & notes */
+.desc { font-size:9.6px; padding:3px 4px; text-align:right; }
+.note { font-size:9px; background:#f6f6f6; border:1px dashed #aaa; padding:4px 4px; margin-top:4px; }
+
+/* Footer (signature) */
+.footer { font-size:11px; margin-top:auto; text-align:left; }
+
+/* Tighten spacing for single-page fit */
+body, table { line-height:1.12; }
+
+/* Print adjustments */
+@media print {
+  html,body { background:#fff; }
+  .sheet { padding:5mm 5mm 5mm 5mm; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="header">نموذج التقييم الأسبوعي لتمريض وحدة القسطرة</div>
+
+    <table class="infotbl" role="presentation">
+      <tr>
+        <td style="width:56%;">اسم الممرض: ............................................</td>
+        <td style="width:44%;">التاريخ: ...... / ...... / ........</td>
+      </tr>
+      <tr>
+        <td>اسم المشرف: ............................................</td>
+        <td>الفترة: ☐ صباحية &nbsp;&nbsp; ☐ ليلية</td>
+      </tr>
+    </table>
+
+    <!-- 1 -->
+    <div class="block">
+      <div class="qtitle">1. الالتزام بمكافحة العدوى (غسل اليدين، تعقيم الأدوات)</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">لا يلتزم بإجراءات الوقاية</td>
+          <td class="desc">يلتزم أحيانًا دون متابعة</td>
+          <td class="desc">يلتزم جزئيًا عند التذكير</td>
+          <td class="desc">يلتزم بمعظم الإجراءات</td>
+          <td class="desc">يلتزم تمامًا ويبادر بتصحيح الآخرين</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="block alt">
+      <div class="qtitle">2. تجهيز المريض بدقة قبل القسطرة (قائمة التحقق)</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">يتجاهل التحضيرات الأساسية</td>
+          <td class="desc">ينفذ جزئيًا ويغفل بعض الخطوات</td>
+          <td class="desc">ينفذ أغلب التحضيرات</td>
+          <td class="desc">ينفذ جميع التحضيرات المطلوبة</td>
+          <td class="desc">ينفذها بدقة ويتأكد من جاهزية المريض</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="block">
+      <div class="qtitle">3. التواجد بجانب المريض أثناء القسطرة (دعم نفسى ومساعدة الطبيب)</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">غير متواجد أو سلبي</td>
+          <td class="desc">يتواجد جزئيًا دون تفاعل</td>
+          <td class="desc">يتواجد ويستجيب عند الطلب</td>
+          <td class="desc">يساعد الطبيب بفاعلية</td>
+          <td class="desc">متفاعل إيجابيًا ويوفر دعم نفسى</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="block alt">
+      <div class="qtitle">4. تنفيذ تعليمات الطبيب بعد القسطرة (دقة وسرعة)</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">يتأخر أو ينسى التعليمات</td>
+          <td class="desc">ينفذ بتأخير متكرر</td>
+          <td class="desc">ينفذ بشكل مقبول</td>
+          <td class="desc">ينفذ بسرعة ودقة</td>
+          <td class="desc">ينفذ فورًا وبكفاءة عالية</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="block">
+      <div class="qtitle">5. تسجيل العلامات الحيوية بدقة وفي المواقيت المحددة</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">لا يسجل أو يعطى بيانات غير صحيحة</td>
+          <td class="desc">يسجل بشكل غير منتظم</td>
+          <td class="desc">يسجل عند التذكير</td>
+          <td class="desc">يسجل بانتظام ودقة جيدة</td>
+          <td class="desc">يسجل بدقة عالية وفي الوقت</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <!-- 6 -->
+    <div class="block alt">
+      <div class="qtitle">6. الالتزام بالمواعيد والانضباط (الحضور/المغادرة)</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">يتأخر بانتظام</td>
+          <td class="desc">يتأخر أحيانًا ويغادر مبكرًا</td>
+          <td class="desc">يلتزم أغلب الأيام</td>
+          <td class="desc">منضبط بالحضور والانصراف</td>
+          <td class="desc">قدوة في الانضباط</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <!-- 7 -->
+    <div class="block">
+      <div class="qtitle">7. الهدوء وضبط الجو داخل الوحدة (تقليل الضوضاء)</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">يتسبب في ضوضاء</td>
+          <td class="desc">يتحدث بصوت مرتفع</td>
+          <td class="desc">يحافظ نسبيًا على الهدوء</td>
+          <td class="desc">يحترم الهدوء العام</td>
+          <td class="desc">يصنع بيئة هادئة وقدوة</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <!-- 8 -->
+    <div class="block alt">
+      <div class="qtitle">8. سرعة الاستجابة لطلبات المريض (راحة/ألم/طلب)</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">يتجاهل نداءات المرضى</td>
+          <td class="desc">يستجيب بعد تأخير</td>
+          <td class="desc">يستجيب عند التكرار</td>
+          <td class="desc">يستجيب بسرعة مناسبة</td>
+          <td class="desc">يستجيب فورًا وباهتمام كامل</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <!-- 9 -->
+    <div class="block">
+      <div class="qtitle">9. دقة الشيت والتوثيق (قياسات فعلية)</div>
+      <table class="rating" role="presentation">
+        <tr>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th>
+          <th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th>
+        </tr>
+        <tr>
+          <td class="desc">يسجل بيانات عشوائية</td>
+          <td class="desc">يسجل دون مراجعة</td>
+          <td class="desc">يسجل بانتظام</td>
+          <td class="desc">يسجل بدقة</td>
+          <td class="desc">توثيق مثالي ودقيق جدًا</td>
+        </tr>
+      </table>
+      <div class="note">ملاحظات: ..........................................................</div>
+    </div>
+
+    <div class="footer">اسم المشرف: ............................ التوقيع: ..........................</div>
+  </div>
+</body>
+</html>

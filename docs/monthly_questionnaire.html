@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<title>نموذج التقييم الشهري الشامل - تمريض وحدة القسطرة (نهائي)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Page */
+@page { size: A4 portrait; margin: 0; }
+html,body {
+  width:210mm;
+  margin:0; padding:0;
+  font-family: 'Cairo', sans-serif; font-weight:700;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  background:#fff; color:#000;
+  box-sizing: border-box;
+}
+
+/* Sheet area: a new sheet for each axis */
+.sheet {
+  width:210mm; height:297mm;
+  padding:6mm 6mm 6mm 6mm;
+  box-sizing:border-box;
+  display:flex; flex-direction:column;
+  page-break-after: always; /* Ensure each sheet is a new page */
+}
+.sheet:last-child {
+  page-break-after: avoid;
+}
+
+/* Header */
+.header {
+  text-align:center;
+  background:#c0c0c0;
+  padding:6px 4px;
+  border-radius:3px;
+  font-size:15px;
+  margin-bottom:6px;
+}
+.subheader {
+  text-align:center;
+  background:#444; color:#fff;
+  padding:4px;
+  border-radius:3px;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+/* Info table */
+table.infotbl {
+  width:100%; border-collapse:collapse; font-size:11px; margin-bottom:6px;
+}
+table.infotbl td {
+  border:1px solid #9b9b9b; padding:5px 6px; background:#fbfbfb;
+}
+
+/* Blocks */
+.block { background:#efefef; border:1px solid #c7c7c7; border-radius:3px; padding:6px; margin-bottom:5px; page-break-inside:avoid; }
+.block.alt { background:#e8e8e8; }
+
+/* Question title */
+.qtitle { font-size:12.2px; margin-bottom:4px; }
+
+/* Rating table */
+table.rating { width:100%; border-collapse:collapse; font-size:10.3px; margin-bottom:4px; }
+table.rating th, table.rating td { border:1px solid #bdbdbd; padding:4px 6px; text-align:center; vertical-align:middle; }
+
+/* Grade header cell */
+.grade-header { background:#444; color:#fff; padding:4px; }
+.grade-wrap { display:flex; align-items:center; justify-content:center; gap:6px; }
+.grade-badge {
+  min-width:22px; height:18px; background:#444; color:#fff;
+  display:inline-flex; align-items:center; justify-content:center;
+  border-radius:3px; font-size:12px; font-weight:700;
+}
+.mark-circle {
+  width:14px; height:14px; border:2px solid #000; border-radius:50%;
+  background:#fff; display:inline-block; box-sizing:border-box;
+}
+
+/* Descriptions & notes */
+.desc { font-size:9.6px; padding:3px 4px; text-align:right; }
+.note { font-size:9px; background:#f6f6f6; border:1px dashed #aaa; padding:4px 4px; margin-top:4px; }
+
+/* Footer (signature) */
+.footer { font-size:11px; margin-top:auto; text-align:left; }
+
+/* Tighten spacing */
+body, table { line-height:1.12; }
+
+/* Print adjustments */
+@media print {
+  html,body { background:#fff; }
+  .sheet { padding:5mm 5mm 5mm 5mm; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+  <div class="sheet">
+    <div class="header">نموذج التقييم الشهري الشامل لتمريض وحدة القسطرة</div>
+    <div class="subheader">المحور الأول: الأداء الفني والإجرائي (9 بنود)</div>
+
+    <table class="infotbl" role="presentation">
+      <tr>
+        <td style="width:56%;">اسم الممرض: ............................................</td>
+        <td style="width:44%;">الشهر: ................... عام: ........</td>
+      </tr>
+      <tr>
+        <td>اسم المشرف (المُقيّم): ............................................</td>
+        <td>النتيجة النهائية للمحور: ..... / 5</td>
+      </tr>
+    </table>
+
+    <div class="block">
+      <div class="qtitle">1. الالتزام بمكافحة العدوى</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">مخالفة جسيمة تعرض للعدوى</td><td class="desc">أخطاء متكررة في التعقيم</td><td class="desc">التزام مقبول (75-89%)</td><td class="desc">التزام عالٍ (أكثر من 90%)</td><td class="desc">التزام مثالي ويُذكّر الآخرين</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">2. تجهيز المريض طبقًا لقائمة التحقق (Checklist)</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">إهمال أدى لخطر/تأخير</td><td class="desc">إغفال بنود مهمة</td><td class="desc">تدارك الخلل لاحقًا</td><td class="desc">نقص بند غير جوهري</td><td class="desc">تنفيذ كامل ودقيق 100%</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">3. تركيب الكانيولا وتعقيم موضع الإدخال</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">خطأ جسيم أدى لمضاعفة</td><td class="desc">تركيب ضعيف سبب إزعاج</td><td class="desc">تركيب مقبول</td><td class="desc">تركيب جيد</td><td class="desc">تركيب مثالي من أول مرة</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">4. إعطاء الأدوية التحضيرية بدقة وفي التوقيت</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">خطأ جرعي/توقيت يسبب مشكلة</td><td class="desc">تأخير/خطأ بسيط</td><td class="desc">دقة مقبولة</td><td class="desc">دقة عالية</td><td class="desc">دقة وتوقيت مثاليان</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">5. التواجد بجانب المريض أثناء القسطرة (دعم ومراقبة)</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">غياب متكرر</td><td class="desc">غياب جزئي</td><td class="desc">متواجد عند الطلب</td><td class="desc">متواجد وفعّال</td><td class="desc">ملازم ويطمئن المريض</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">6. الحفاظ على الحقل المعقم أثناء الإجراء</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">انتهاك جسيم للحقل المعقم</td><td class="desc">اختراق ملحوظ</td><td class="desc">اختراق بسيط</td><td class="desc">اختراق طفيف تم تداركه</td><td class="desc">لا يوجد أي اختراق للحقل</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">7. تسجيل العلامات الحيوية بعد الإجراء بدقة وفي المواقيت</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">سجلات غائبة/مزورة</td><td class="desc">تسجيل غير دقيق</td><td class="desc">تسجيل مقبول</td><td class="desc">تسجيل دقيق</td><td class="desc">تسجيل فوري ودقيق وموثّق</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">8. مراقبة مكان الإدخال لأي نزيف/مضاعفات</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">إهمال أدى لمضاعفات</td><td class="desc">مراقبة غير كافية</td><td class="desc">مراقبة مقبولة</td><td class="desc">مراقبة جيدة</td><td class="desc">فحص منتظم وتدخل فوري</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">9. نظافة وتعقيم الأسرة والأجهزة بعد كل حالة</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">إهمال متكرر للنظافة</td><td class="desc">تنظيف غير كامل</td><td class="desc">تنظيف مقبول</td><td class="desc">تنظيف جيد ومنتظم</td><td class="desc">تنظيف وتعقيم ممنهج وفوري</td></tr>
+      </table>
+    </div>
+    <div class="note" style="margin-top:auto; text-align:center;">ملاحظات عامة على المحور: .....................................................................................................................................................</div>
+  </div>
+
+  <div class="sheet">
+    <div class="header">نموذج التقييم الشهري الشامل لتمريض وحدة القسطرة</div>
+    <div class="subheader">المحور الثاني: السلوك والانضباط المهني (8 بنود)</div>
+
+    <table class="infotbl" role="presentation">
+      <tr>
+        <td style="width:56%;">اسم الممرض: ............................................</td>
+        <td style="width:44%;">الشهر: ................... عام: ........</td>
+      </tr>
+      <tr>
+        <td>اسم المشرف (المُقيّم): ............................................</td>
+        <td>النتيجة النهائية للمحور: ..... / 5</td>
+      </tr>
+    </table>
+
+    <div class="block">
+      <div class="qtitle">10. الالتزام بمواعيد الحضور والانصراف</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">غياب/ترك الوردية بدون إذن</td><td class="desc">تأخير متكرر</td><td class="desc">تأخير أحيانًا</td><td class="desc">التزام تام بالمواعيد</td><td class="desc">قدوة ويحضر مبكرًا</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">11. الهدوء والانضباط داخل الوحدة</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">مصدر إزعاج مستمر</td><td class="desc">يسبب ضوضاء أحيانًا</td><td class="desc">هادئ غالبًا</td><td class="desc">ملتزم بالهدوء</td><td class="desc">قدوة في الهدوء والانضباط</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">12. نظافة المظهر والزى الرسمي</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">مظهر غير لائق متكرر</td><td class="desc">يحتاج لتذكير</td><td class="desc">مظهر مقبول</td><td class="desc">زي نظيف ومرتب</td><td class="desc">مظهر مثالي (زي، بطاقة)</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">13. احترام التعليمات الإدارية</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">يعترض ويعرقل التعليمات</td><td class="desc">يتذمر وينفذ ببطء</td><td class="desc">ينفذ التعليمات</td><td class="desc">ينفذ بسرعة</td><td class="desc">ينفذ فورًا ويشجع الآخرين</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">14. التعاون مع الزملاء والأطباء</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">يرفض المساعدة/يخلق صراعات</td><td class="desc">غير متعاون</td><td class="desc">يتعاون عند الطلب</td><td class="desc">متعاون بشكل جيد</td><td class="desc">مبادر ورحّب بالمساعدة</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">15. عدم استخدام الهاتف أثناء العمل</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">استخدام مستمر يؤثر على العمل</td><td class="desc">استخدام شخصي متكرر</td><td class="desc">يستخدمه أحيانًا</td><td class="desc">لا يستخدم إلا للضرورة</td><td class="desc">لا يستخدم إلا للضرورة المهنية</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">16. الحفاظ على سرية معلومات المرضى</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">خرق خطير للسرية</td><td class="desc">إهمال في السرية</td><td class="desc">يحافظ على السرية</td><td class="desc">حريص جدًا على السرية</td><td class="desc">قدوة في حفظ أسرار المرضى</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">17. تحمل المسؤولية وقت الضغط</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">يفقد السيطرة ويعرقل العمل</td><td class="desc">يتوتر ويتردد</td><td class="desc">يؤدي عمله تحت الضغط</td><td class="desc">هادئ وفعّال تحت الضغط</td><td class="desc">يقود ويدعم الفريق في الأزمات</td></tr>
+      </table>
+    </div>
+    <div class="note" style="margin-top:auto; text-align:center;">ملاحظات عامة على المحور: .....................................................................................................................................................</div>
+  </div>
+
+  <div class="sheet">
+    <div class="header">نموذج التقييم الشهري الشامل لتمريض وحدة القسطرة</div>
+    <div class="subheader">المحور الثالث: رعاية المريض والتوثيق (8 بنود)</div>
+
+    <table class="infotbl" role="presentation">
+      <tr>
+        <td style="width:56%;">اسم الممرض: ............................................</td>
+        <td style="width:44%;">الشهر: ................... عام: ........</td>
+      </tr>
+      <tr>
+        <td>اسم المشرف (المُقيّم): ............................................</td>
+        <td>النتيجة النهائية للمحور: ..... / 5</td>
+      </tr>
+    </table>
+
+    <div class="block">
+      <div class="qtitle">18. الترحيب وتهدئة المريض عند الدخول</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">تعامل فظ أو إهمال للمريض</td><td class="desc">تعامل جاف</td><td class="desc">يرحب بالمريض</td><td class="desc">يرحب ويهدئ المريض</td><td class="desc">يكسب ثقة المريض ويطمئنه</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">19. شرح خطوات الإجراء بلغة بسيطة</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">لا يشرح أو يعطي معلومات مضللة</td><td class="desc">لا يشرح إلا عند السؤال</td><td class="desc">يشرح بشكل مختصر</td><td class="desc">يشرح الخطوات بوضوح</td><td class="desc">يشرح ويتأكد من فهم المريض</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">20. التواجد فى مرحلة الإفاقة (المتابعة بعد القسطرة)</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">غياب/إهمال المريض</td><td class="desc">تواجد متقطع</td><td class="desc">متواجد معظم الوقت</td><td class="desc">متواجد ومراقب بشكل جيد</td><td class="desc">متواجد ومراقب دائمًا</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">21. سرعة الاستجابة لطلبات المريض</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">تجاهل/تأخر خطير</td><td class="desc">استجابة بطيئة</td><td class="desc">استجابة مقبولة</td><td class="desc">استجابة سريعة</td><td class="desc">استجابة فورية واهتمام كامل</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">22. إعطاء العلاج فى مواعيده بدقة</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">أخطاء جرعية أو عزوف</td><td class="desc">تأخير متكرر</td><td class="desc">يعطي العلاج في وقته</td><td class="desc">دقيق في المواعيد</td><td class="desc">دقة كاملة بالجرعات والمواعيد</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">23. دقة الشيت والتوثيق (قياسات فعلية)</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">سجلات وهمية/مزورة</td><td class="desc">تسجيل غير دقيق</td><td class="desc">تسجيل مقبول</td><td class="desc">سجلات دقيقة</td><td class="desc">سجلات دقيقة ومتطابقة</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">24. تسليم الشيت ونقل الملاحظات للمشرف فى نهاية الوردية</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">لا يسلم أو يسلم مزور</td><td class="desc">تسليم متأخر/ناقص</td><td class="desc">يسلم الشيت</td><td class="desc">يسلم مع ملاحظات شفهية</td><td class="desc">تسليم فوري ومراجع وشامل</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">25. التواصل مع الطبيب حال حدوث تغيّر فى حالة المريض</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">لا يبلغ/تأخر يعرض للخطر</td><td class="desc">يبلغ متأخرًا</td><td class="desc">يبلغ عن التغيرات</td><td class="desc">يبلغ فورًا</td><td class="desc">يبلغ فورًا ويتابع التعليمات</td></tr>
+      </table>
+    </div>
+    <div class="note" style="margin-top:auto; text-align:center;">ملاحظات عامة على المحور: .....................................................................................................................................................</div>
+  </div>
+
+  <div class="sheet">
+    <div class="header">نموذج التقييم الشهري الشامل لتمريض وحدة القسطرة</div>
+    <div class="subheader">المحور الرابع: المبادرة والتطوير (4 بنود)</div>
+
+    <table class="infotbl" role="presentation">
+      <tr>
+        <td style="width:56%;">اسم الممرض: ............................................</td>
+        <td style="width:44%;">الشهر: ................... عام: ........</td>
+      </tr>
+      <tr>
+        <td>اسم المشرف (المُقيّم): ............................................</td>
+        <td>النتيجة النهائية للمحور: ..... / 5</td>
+      </tr>
+    </table>
+
+    <div class="block">
+      <div class="qtitle">26. المبادرة بالمساعدة دون طلب</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">لا يبادر أبدًا</td><td class="desc">نادرًا ما يبادر</td><td class="desc">يبادر أحيانًا</td><td class="desc">يبادر غالبًا</td><td class="desc">يبادر باستمرار ويخفف الحمل</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">27. تقديم اقتراحات عملية لتحسين العمل</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">سلبي/يرفض التغيير</td><td class="desc">لا يقدم اقتراحات</td><td class="desc">يقدم اقتراحات عامة</td><td class="desc">يقدم اقتراحات جيدة</td><td class="desc">يقدم اقتراحات عملية قابلة للتطبيق</td></tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="qtitle">28. المشاركة فى التدريب والتعليم</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">يهمل الحضور</td><td class="desc">يحضر دون مشاركة</td><td class="desc">يشارك في التدريب</td><td class="desc">يشارك بفعالية</td><td class="desc">يبادر بالتدريب ويدرب الآخرين</td></tr>
+      </table>
+    </div>
+    <div class="block alt">
+      <div class="qtitle">29. القدوة والانضباط العام</div>
+      <table class="rating" role="presentation">
+        <tr><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">1</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">2</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">3</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">4</span><span class="mark-circle"></span></div></th><th class="grade-header"><div class="grade-wrap"><span class="grade-badge">5</span><span class="mark-circle"></span></div></th></tr>
+        <tr><td class="desc">يخلق مشاكل متكررة</td><td class="desc">يحتاج لتوجيه مستمر</td><td class="desc">منضبط بشكل عام</td><td class="desc">مثال جيد للزملاء</td><td class="desc">مثال يحتذى به للآخرين</td></tr>
+      </table>
+    </div>
+    
+    <div class="note" style="text-align:center; padding:10px; margin-top:20px;">
+        <strong>النتيجة النهائية (بعد تطبيق الأوزان): ............ %</strong><br>
+        <strong>التقدير العام: (ممتاز / جيد جداً / جيد / مقبول / ضعيف)</strong>
+    </div>
+
+    <div class="footer" style="display:flex; justify-content:space-between; margin-top:auto; padding-top:20px;">
+        <div>توقيع المشرف (المُقيّم): ............................................</div>
+        <div>توقيع مدير الوحدة (للاعتماد): ............................................</div>
+    </div>
+  </div>
+
+</body>
+</html>
