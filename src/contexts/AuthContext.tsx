@@ -88,10 +88,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: false, error: 'فشل الاتصال بقاعدة البيانات المحلية' };
       }
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
+      const { data: authData, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error || !authData.user) {
         return { success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' };
       }
+      
+      // Explicitly fetch profile after login to ensure user state is set
+      await fetchUserProfile(authData.user);
+
       return { success: true };
     }
   };
