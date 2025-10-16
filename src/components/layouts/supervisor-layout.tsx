@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { 
   Sidebar, 
   SidebarHeader, 
@@ -11,11 +11,7 @@ import {
 import { Header } from "@/components/ui/header";
 import { Home, Edit, List, Library } from "lucide-react";
 
-interface SupervisorLayoutProps {
-  children: React.ReactNode;
-}
-
-const SupervisorLayout: React.FC<SupervisorLayoutProps> = ({ children }) => {
+const SupervisorLayout: React.FC = () => {
   const navLinks = [
     { href: "/supervisor/dashboard", label: "لوحة التحكم", icon: <Home /> },
     { href: "/supervisor/evaluate", label: "تقييم جديد", icon: <Edit /> },
@@ -49,7 +45,7 @@ const SupervisorLayout: React.FC<SupervisorLayoutProps> = ({ children }) => {
       <div className="flex-1">
         <Header />
         <main className="p-8">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>

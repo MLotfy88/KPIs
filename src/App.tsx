@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute, RoleBasedRoute } from "./components/auth/ProtectedRoute";
+import { ManagerLayout } from "./components/layouts/manager-layout";
+import { SupervisorLayout } from "./components/layouts/supervisor-layout";
 
 // Pages
 import Index from "./pages/Index";
@@ -40,20 +42,24 @@ const App = () => (
               
               {/* Supervisor Routes */}
               <Route element={<RoleBasedRoute allowedRoles={['supervisor']} />}>
-                <Route path="/supervisor/dashboard" element={<SupervisorDashboard />} />
-                <Route path="/supervisor/evaluate" element={<Evaluate />} />
-                <Route path="/supervisor/history" element={<SupervisorHistory />} />
+                <Route element={<SupervisorLayout />}>
+                  <Route path="/supervisor/dashboard" element={<SupervisorDashboard />} />
+                  <Route path="/supervisor/evaluate" element={<Evaluate />} />
+                  <Route path="/supervisor/history" element={<SupervisorHistory />} />
+                </Route>
               </Route>
 
               {/* Manager Routes */}
               <Route element={<RoleBasedRoute allowedRoles={['manager']} />}>
-                <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-                <Route path="/manager/nurses" element={<NursesPage />} />
-                <Route path="/manager/nurses/:id" element={<NurseProfilePage />} />
-                <Route path="/manager/audits" element={<AuditsPage />} />
-                <Route path="/manager/supervisors" element={<SupervisorsPage />} />
-                <Route path="/manager/reports" element={<ReportsPage />} />
-                <Route path="/manager/badges" element={<BadgesPage />} />
+                <Route element={<ManagerLayout />}>
+                  <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+                  <Route path="/manager/nurses" element={<NursesPage />} />
+                  <Route path="/manager/nurses/:id" element={<NurseProfilePage />} />
+                  <Route path="/manager/audits" element={<AuditsPage />} />
+                  <Route path="/manager/supervisors" element={<SupervisorsPage />} />
+                  <Route path="/manager/reports" element={<ReportsPage />} />
+                  <Route path="/manager/badges" element={<BadgesPage />} />
+                </Route>
               </Route>
               
               {/* Routes accessible by both roles */}

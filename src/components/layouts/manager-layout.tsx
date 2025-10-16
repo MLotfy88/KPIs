@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { 
   Sidebar, 
   SidebarHeader, 
@@ -11,13 +11,7 @@ import {
 import { Header } from "@/components/ui/header";
 import { Home, Users, BarChart2, FileCheck, UserCog, Award, Library } from "lucide-react";
 
-interface ManagerLayoutProps {
-  children: React.ReactNode;
-}
-
-const ManagerLayout: React.FC<ManagerLayoutProps> = ({ children }) => {
-  const location = useLocation();
-
+const ManagerLayout: React.FC = () => {
   const navLinks = [
     { href: "/manager/dashboard", label: "لوحة التحكم", icon: <Home /> },
     { href: "/manager/nurses", label: "فريق التمريض", icon: <Users /> },
@@ -54,7 +48,7 @@ const ManagerLayout: React.FC<ManagerLayoutProps> = ({ children }) => {
       <div className="flex-1">
         <Header />
         <main className="p-8">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>
