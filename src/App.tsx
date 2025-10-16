@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute, RoleBasedRoute } from "./components/auth/ProtectedRoute";
 import { ManagerLayout } from "./components/layouts/manager-layout";
 import { SupervisorLayout } from "./components/layouts/supervisor-layout";
+import { SidebarProvider } from "./components/ui/sidebar";
 
 // Pages
 import Index from "./pages/Index";
@@ -38,9 +39,10 @@ const App = () => (
             
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<Index />} />
-              
-              {/* Supervisor Routes */}
+              <SidebarProvider>
+                <Route path="/" element={<Index />} />
+                
+                {/* Supervisor Routes */}
               <Route element={<RoleBasedRoute allowedRoles={['supervisor']} />}>
                 <Route element={<SupervisorLayout />}>
                   <Route path="/supervisor/dashboard" element={<SupervisorDashboard />} />
@@ -61,9 +63,10 @@ const App = () => (
                   <Route path="/manager/badges" element={<BadgesPage />} />
                 </Route>
               </Route>
-              
-              {/* Routes accessible by both roles */}
-              <Route path="/all-badges" element={<AllBadgesPage />} />
+                
+                {/* Routes accessible by both roles */}
+                <Route path="/all-badges" element={<AllBadgesPage />} />
+              </SidebarProvider>
             </Route>
 
             {/* Catch-all Route */}
