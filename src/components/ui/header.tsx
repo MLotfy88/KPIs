@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useSidebar, SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -6,9 +7,12 @@ import { LogOut, User } from "lucide-react";
 import { Notifications } from "@/components/common/Notifications";
 
 const Header: React.FC = () => {
+  const { isMobile } = useSidebar();
+
   return (
     <header className="flex items-center justify-between p-4 bg-white border-b dark:bg-gray-800">
-      <div>
+      <div className="flex items-center gap-2">
+        {isMobile && <SidebarTrigger />}
         {/* Breadcrumbs or page title can go here */}
       </div>
       <div className="flex items-center gap-4">

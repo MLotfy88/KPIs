@@ -21,10 +21,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (MODE === 'supabase') {
       const getSession = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          await fetchUserProfile(session.user);
-        } else {
+        try {
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (error) throw error;
+          if (session) {
+            await fetchUserProfile(session.user);
+          } else {
+            setIsLoading(false);
+          }
+        } catch (error) {
+          console.error("Error getting session on initial load:", error);
           setIsLoading(false);
         }
       };
