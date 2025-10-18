@@ -34,44 +34,44 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <SidebarProvider>
+          <SidebarProvider>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Index />} />
                 
                 {/* Supervisor Routes */}
-              <Route element={<RoleBasedRoute allowedRoles={['supervisor']} />}>
-                <Route element={<SupervisorLayout />}>
-                  <Route path="/supervisor/dashboard" element={<SupervisorDashboard />} />
-                  <Route path="/supervisor/evaluate" element={<Evaluate />} />
-                  <Route path="/supervisor/history" element={<SupervisorHistory />} />
+                <Route element={<RoleBasedRoute allowedRoles={['supervisor']} />}>
+                  <Route element={<SupervisorLayout />}>
+                    <Route path="/supervisor/dashboard" element={<SupervisorDashboard />} />
+                    <Route path="/supervisor/evaluate" element={<Evaluate />} />
+                    <Route path="/supervisor/history" element={<SupervisorHistory />} />
+                  </Route>
                 </Route>
+
+                {/* Manager Routes */}
+                <Route element={<RoleBasedRoute allowedRoles={['manager']} />}>
+                  <Route element={<ManagerLayout />}>
+                    <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+                    <Route path="/manager/nurses" element={<NursesPage />} />
+                    <Route path="/manager/nurses/:id" element={<NurseProfilePage />} />
+                    <Route path="/manager/audits" element={<AuditsPage />} />
+                    <Route path="/manager/supervisors" element={<SupervisorsPage />} />
+                    <Route path="/manager/reports" element={<ReportsPage />} />
+                    <Route path="/manager/badges" element={<BadgesPage />} />
+                  </Route>
+                </Route>
+                  
+                  {/* Routes accessible by both roles */}
+                  <Route path="/all-badges" element={<AllBadgesPage />} />
               </Route>
 
-              {/* Manager Routes */}
-              <Route element={<RoleBasedRoute allowedRoles={['manager']} />}>
-                <Route element={<ManagerLayout />}>
-                  <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-                  <Route path="/manager/nurses" element={<NursesPage />} />
-                  <Route path="/manager/nurses/:id" element={<NurseProfilePage />} />
-                  <Route path="/manager/audits" element={<AuditsPage />} />
-                  <Route path="/manager/supervisors" element={<SupervisorsPage />} />
-                  <Route path="/manager/reports" element={<ReportsPage />} />
-                  <Route path="/manager/badges" element={<BadgesPage />} />
-                </Route>
-              </Route>
-                
-                {/* Routes accessible by both roles */}
-                <Route path="/all-badges" element={<AllBadgesPage />} />
-              </SidebarProvider>
-            </Route>
-
-            {/* Catch-all Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              {/* Catch-all Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </SidebarProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
