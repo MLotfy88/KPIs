@@ -21,7 +21,7 @@ const Header: React.FC = () => {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative w-8 h-8 rounded-full">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                <AvatarImage src="/placeholder.svg" alt="User Avatar" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </Button>

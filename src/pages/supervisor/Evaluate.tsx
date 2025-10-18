@@ -24,7 +24,7 @@ const Evaluate = () => {
   const location = useLocation();
   const preselectedType = location.state?.evaluationType as EvaluationType | undefined;
 
-  const [step, setStep] = useState<EvaluationStep>('SELECT_NURSE');
+  const [step, setStep] = useState<EvaluationStep>(preselectedType ? 'SELECT_NURSE' : 'SELECT_TYPE');
   const [selectedNurse, setSelectedNurse] = useState<Nurse | null>(null);
   const [evaluationType, setEvaluationType] = useState<EvaluationType | null>(preselectedType || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,21 +34,20 @@ const Evaluate = () => {
   // Load saved evaluation on mount
   useEffect(() => {
     const savedEvaluation = loadInProgressEvaluation();
-    if (savedEvaluation?.nurse && !preselectedType) { // Only prompt if not coming from a direct link
+    if (savedEvaluation?.nurse && savedEvaluation?.evaluationType) {
+      // If coming from a direct link, ignore saved evaluations
+      if (preselectedType) {
+        clearInProgressEvaluation();
+        return;
+      }
+
       if (window.confirm('لديك تقييم غير مكتمل. هل تود استكماله؟')) {
         setSelectedNurse(savedEvaluation.nurse);
-        if (savedEvaluation.evaluationType) {
-          setEvaluationType(savedEvaluation.evaluationType);
-          setStep('FILL_FORM');
-        } else {
-          setStep('SELECT_TYPE');
-        }
+        setEvaluationType(savedEvaluation.evaluationType);
+        setStep('FILL_FORM');
       } else {
         clearInProgressEvaluation();
       }
-    } else if (preselectedType) {
-      // If a type is preselected, clear any old in-progress evaluations
-      clearInProgressEvaluation();
     }
   }, [preselectedType]);
 
@@ -112,6 +111,18 @@ const Evaluate = () => {
   };
 
   const renderStep = () => {
+    if (step === 'SELECT_TYPE' && !selectedNurse) {
+      // If for some reason we are at SELECT_TYPE but have no nurse, go back.
+      setStep('SELECT_NURSE');
+    }
+
+    // If a type is pre-selected, we don't need to show the type selector.
+    // The main flow will handle moving from nurse selection to the form.
+    if (step === 'SELECT_TYPE' && preselectedType) {
+       setStep('FILL_FORM');
+       return null; // Render nothing this cycle, will re-render with form
+    }
+
     switch (step) {
       case 'SELECT_NURSE':
         return (
