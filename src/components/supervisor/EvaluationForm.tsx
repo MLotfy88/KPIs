@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { EvaluationType, EvaluationItem } from '@/types';
-import { weeklyItems, monthlyItems } from '@/lib/evaluationItems';
+import { getEvaluationItems } from '@/lib/api';
 import { loadInProgressEvaluation, saveInProgressEvaluation } from '@/lib/storage';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,19 +17,33 @@ interface EvaluationFormProps {
 }
 
 const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormProps) => {
-  const items: EvaluationItem[] = evaluationType === 'weekly' ? weeklyItems : monthlyItems;
+  const [items, setItems] = useState<EvaluationItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [scores, setScores] = useState<Record<string, number>>({});
   const [notes, setNotes] = useState<string>('');
   const [currentStep, setCurrentStep] = useState(0);
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    const savedData = loadInProgressEvaluation();
-    if (savedData) {
-      setScores(savedData.scores || {});
-      setNotes(savedData.notes || '');
-    }
-  }, []);
+    const fetchItems = async () => {
+      try {
+        setIsLoading(true);
+        const fetchedItems = await getEvaluationItems(evaluationType);
+        setItems(fetchedItems);
+        const savedData = loadInProgressEvaluation();
+        if (savedData) {
+          setScores(savedData.scores || {});
+          setNotes(savedData.notes || '');
+        }
+      } catch (error) {
+        console.error("Failed to fetch evaluation items:", error);
+        // Optionally, show a toast or error message to the user
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchItems();
+  }, [evaluationType]);
 
   useEffect(() => {
     const currentData = loadInProgressEvaluation() || {};
@@ -39,8 +53,8 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
   const completedItems = useMemo(() => Object.keys(scores).length, [scores]);
   const progress = (completedItems / items.length) * 100;
 
-  const handleScoreChange = (itemId: number, score: number) => {
-    setScores(prev => ({ ...prev, [itemId]: score }));
+  const handleScoreChange = (itemKey: string, score: number) => {
+    setScores(prev => ({ ...prev, [itemKey]: score }));
   };
 
   const handleSubmit = () => {
@@ -51,20 +65,18 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
     onSubmit(scores, notes);
   };
 
-  const renderEvaluationItem = (item: EvaluationItem) => (
+  const renderEvaluationItem = (item: EvaluationItem, index: number) => (
     <div key={item.id} className="p-4 md:p-6 rounded-lg bg-muted/50 mb-4">
-      <p className="font-bold mb-4 text-lg md:text-xl">{item.id}. {item.text}</p>
+      <p className="font-bold mb-4 text-lg md:text-xl">{index + 1}. {item.question}</p>
       <RadioGroup
-        value={scores[item.id]?.toString() || ''}
-        onValueChange={(value) => handleScoreChange(item.id, parseInt(value, 10))}
-        className="space-y-4"
+        value={scores[item.item_key]?.toString() || ''}
+        onValueChange={(value) => handleScoreChange(item.item_key, parseInt(value, 10))}
+        className="grid grid-cols-5 gap-2 md:gap-4"
       >
-        {item.rubrics && Object.entries(item.rubrics).map(([score, description]) => (
-          <div key={score} className="flex items-start space-x-3 space-x-reverse p-3 rounded-md transition-colors hover:bg-background">
-            <RadioGroupItem value={score} id={`item-${item.id}-score-${score}`} className="mt-1" />
-            <Label htmlFor={`item-${item.id}-score-${score}`} className="flex-1 text-right font-bold">
-              <span className="font-bold text-primary text-lg">{score}</span>: {description}
-            </Label>
+        {[1, 2, 3, 4, 5].map(score => (
+          <div key={score} className="flex flex-col items-center space-y-2">
+            <RadioGroupItem value={score.toString()} id={`item-${item.id}-score-${score}`} />
+            <Label htmlFor={`item-${item.id}-score-${score}`} className="font-bold text-lg">{score}</Label>
           </div>
         ))}
       </RadioGroup>
@@ -96,7 +108,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
 
   const renderDesktopView = () => (
     <>
-      {items.map(item => renderEvaluationItem(item))}
+      {items.map((item, index) => renderEvaluationItem(item, index))}
       <Card className="mt-6">
         <CardHeader>
           <CardTitle>الملاحظات العامة</CardTitle>
@@ -115,6 +127,14 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
       </Button>
     </>
   );
+
+  if (isLoading) {
+    return (
+      <Card className="w-full max-w-4xl mx-auto p-8 text-center">
+        <CardTitle>جاري تحميل بنود التقييم...</CardTitle>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-4xl mx-auto border-0 md:border md:shadow-sm">

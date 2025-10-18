@@ -27,10 +27,9 @@ export interface Evaluation {
   supervisor_id: string;
   evaluation_type: EvaluationType;
   created_at: string;
-  scores: Record<string, number>;
-  notes: string;
-  final_score: number;
+  notes?: string;
   nurse_name?: string;
+  // scores and final_score are now in separate tables
 }
 
 export interface Audit {
@@ -43,44 +42,46 @@ export interface Audit {
   created_at: string;
 }
 
+// Represents a record in the new evaluation_items table
 export interface EvaluationItem {
-  id: number;
-  text: string;
-  category: 'technical' | 'behavioral' | 'care' | 'initiative' | 'general';
-  weight?: number;
-  rubrics: { score: number; description: string }[];
+  id: string; // uuid
+  item_key: string;
+  question: string;
+  category: string;
+  created_at: string;
 }
 
-export type BadgeIcon = 'Award' | 'Star' | 'Zap' | 'Shield' | 'TrendingUp';
-export type BadgeColor = 'bronze' | 'silver' | 'gold' | 'platinum';
-
-export interface BadgeCriteria {
-  type: 'average_score' | 'specific_score' | 'consistency';
-  value: number;
-  period?: number; // e.g., number of evaluations
-  operator: 'gte' | 'lte' | 'eq';
-  evaluation_type?: EvaluationType;
+// Represents a record in the new evaluation_scores table
+export interface EvaluationScore {
+  id: string; // uuid
+  evaluation_id: string;
+  item_id: string;
+  score: number;
 }
 
-export interface BadgeTier {
-  name: BadgeColor;
-  criteria: BadgeCriteria;
-}
-
+// Represents the new structure of the badges table
 export interface Badge {
-  id: string;
-  name: string;
-  description: string;
-  icon: BadgeIcon;
-  tiers: BadgeTier[];
+  badge_id: string;
+  badge_name: string;
+  badge_icon?: string;
+  description?: string;
+  linked_metrics: string[]; // Array of item_key from evaluation_items
+  criteria_type: 'average' | 'percentage' | 'improvement' | 'direct_assessment';
+  thresholds: Record<string, any>; // Flexible JSONB for different criteria
+  period_type: 'weekly' | 'monthly' | 'quarterly' | 'all_time';
+  active: boolean;
+  editable: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface NurseBadge {
   id: string;
   nurse_id: string;
   badge_id: string;
-  tier: string;
+  tier?: string;
   awarded_at: string;
+  evaluation_id?: string;
 }
 
 export interface Notification {

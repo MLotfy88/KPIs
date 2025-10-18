@@ -8,7 +8,7 @@
  */
 
 import { supabase } from './supabase';
-import { Evaluation, Nurse, User, Audit, Badge, NurseBadge, Notification, ImprovementPlan } from '@/types';
+import { Evaluation, EvaluationItem, Nurse, User, Audit, Badge, NurseBadge, Notification, ImprovementPlan } from '@/types';
 import { notifyNewEvaluation, notifyEvaluationAudited, notifyBadgeAwarded } from './notifications';
 
 // --- Auth Functions ---
@@ -27,39 +27,104 @@ export const getActiveNurses = async (): Promise<Nurse[]> => {
   return data;
 };
 
-export const saveEvaluation = async (evaluation: Omit<Evaluation, 'id' | 'created_at' | 'nurse_name'>): Promise<Evaluation> => {
-    const { data, error } = await supabase.from('evaluations').insert(evaluation).select().single();
-    if (error) throw new Error(error.message);
-    
-    // Assuming supervisor and nurse details are available to be fetched for notification
-    const { data: nurseData, error: nurseError } = await supabase.from('nurses').select('name').eq('id', evaluation.nurse_id).single();
-    if (nurseError) console.error('Error fetching nurse name for notification:', nurseError);
+export const getEvaluationItems = async (evaluationType: 'weekly' | 'monthly'): Promise<EvaluationItem[]> => {
+  const { data, error } = await supabase
+    .from('evaluation_items')
+    .select('*')
+    .contains('evaluation_types', [evaluationType]);
+  
+  if (error) throw new Error(error.message);
+  return data;
+};
 
-    const { data: supervisorData, error: supervisorError } = await supabase.from('profiles').select('*').eq('id', evaluation.supervisor_id).single();
-    if (supervisorError) console.error('Error fetching supervisor for notification:', supervisorError);
+// This is the new type for the function argument, reflecting the UI data structure
+type EvaluationSubmission = Omit<Evaluation, 'id' | 'created_at' | 'nurse_name'> & {
+  scores: Record<string, number>; // e.g., { "uniform_check": 5, "patient_care": 4 }
+};
 
-    if (data && nurseData && supervisorData) {
-        const { data: managers, error: managersError } = await supabase.from('profiles').select('*').eq('role', 'manager');
-        if (managersError) console.error('Error fetching managers for notification:', managersError);
-        if (managers) {
-            await notifyNewEvaluation(data.id, nurseData.name, supervisorData, managers);
-        }
-    }
+export const saveEvaluation = async (evaluationData: EvaluationSubmission): Promise<Evaluation> => {
+  const { scores, ...evaluationCore } = evaluationData;
 
-    return data;
+  // Step 1: Insert the core evaluation record without scores
+  const { data: newEvaluation, error: evaluationError } = await supabase
+    .from('evaluations')
+    .insert(evaluationCore)
+    .select()
+    .single();
+
+  if (evaluationError) throw new Error(`Failed to save evaluation: ${evaluationError.message}`);
+  if (!newEvaluation) throw new Error('Failed to get new evaluation record.');
+
+  // Step 2: Fetch the IDs for the evaluation items based on their keys (from the scores object)
+  const itemKeys = Object.keys(scores);
+  const { data: items, error: itemsError } = await supabase
+    .from('evaluation_items')
+    .select('id, item_key')
+    .in('item_key', itemKeys);
+  
+  if (itemsError) throw new Error(`Failed to fetch evaluation items: ${itemsError.message}`);
+  if (!items || items.length !== itemKeys.length) throw new Error('Mismatch in evaluation items found.');
+
+  const itemIdMap = new Map(items.map(item => [item.item_key, item.id]));
+
+  // Step 3: Prepare and insert the individual scores into the evaluation_scores table
+  const scoresToInsert = itemKeys.map(key => ({
+    evaluation_id: newEvaluation.id,
+    item_id: itemIdMap.get(key),
+    score: scores[key],
+  }));
+
+  const { error: scoresError } = await supabase.from('evaluation_scores').insert(scoresToInsert);
+  if (scoresError) throw new Error(`Failed to save scores: ${scoresError.message}`);
+
+  // Step 4: Handle notifications (existing logic)
+  const { data: nurseData, error: nurseError } = await supabase.from('nurses').select('name').eq('id', newEvaluation.nurse_id).single();
+  if (nurseError) console.error('Error fetching nurse name for notification:', nurseError);
+
+  const { data: supervisorData, error: supervisorError } = await supabase.from('profiles').select('*').eq('id', newEvaluation.supervisor_id).single();
+  if (supervisorError) console.error('Error fetching supervisor for notification:', supervisorError);
+
+  if (newEvaluation && nurseData && supervisorData) {
+      const { data: managers, error: managersError } = await supabase.from('profiles').select('*').eq('role', 'manager');
+      if (managersError) console.error('Error fetching managers for notification:', managersError);
+      if (managers) {
+          await notifyNewEvaluation(newEvaluation.id, nurseData.name, supervisorData, managers);
+      }
+  }
+
+  return newEvaluation;
 };
 
 export const getSupervisorEvaluations = async (supervisorId: string): Promise<Evaluation[]> => {
     const { data, error } = await supabase
         .from('evaluations')
-        .select(`*, nurse:nurses (name)`)
+        .select(`
+            *, 
+            nurse:nurses (name),
+            scores:evaluation_scores ( score, item:evaluation_items (item_key) )
+        `)
         .eq('supervisor_id', supervisorId)
         .order('created_at', { ascending: false });
 
     if (error) throw new Error(error.message);
 
     // @ts-ignore
-    return data.map(e => ({ ...e, nurse_name: e.nurse.name, nurses: undefined }));
+    return data.map(e => {
+        const scoresObj = e.scores.reduce((acc, s) => {
+            // @ts-ignore
+            acc[s.item.item_key] = s.score;
+            return acc;
+        }, {});
+        const final_score = Object.values(scoresObj).reduce((sum: number, score: any) => sum + score, 0) / Object.values(scoresObj).length;
+
+        return { 
+            ...e, 
+            nurse_name: e.nurse.name, 
+            scores: scoresObj,
+            final_score: isNaN(final_score) ? 0 : final_score,
+            nurses: undefined 
+        };
+    });
 };
 
 export const getAllNurses = async (): Promise<Nurse[]> => {
@@ -98,15 +163,63 @@ export const getNurseById = async (id: string): Promise<Nurse | null> => {
 };
 
 export const getEvaluationsByNurseId = async (nurseId: string): Promise<Evaluation[]> => {
-  const { data, error } = await supabase.from('evaluations').select('*').eq('nurse_id', nurseId).order('created_at', { ascending: false });
+  const { data, error } = await supabase
+    .from('evaluations')
+    .select(`
+        *,
+        scores:evaluation_scores ( score, item:evaluation_items (item_key, question, category) )
+    `)
+    .eq('nurse_id', nurseId)
+    .order('created_at', { ascending: false });
+
   if (error) throw new Error(error.message);
-  return data;
+
+  // @ts-ignore
+  return data.map(e => {
+    const scoresObj = e.scores.reduce((acc, s) => {
+        // @ts-ignore
+        acc[s.item.item_key] = s.score;
+        return acc;
+    }, {});
+    const final_score = Object.values(scoresObj).reduce((sum: number, score: any) => sum + score, 0) / Object.values(scoresObj).length;
+
+    return { 
+        ...e, 
+        scores: scoresObj,
+        final_score: isNaN(final_score) ? 0 : final_score,
+    };
+  });
 };
 
 export const getAllEvaluations = async (): Promise<Evaluation[]> => {
-    const { data, error } = await supabase.from('evaluations').select('*');
+    const { data, error } = await supabase
+        .from('evaluations')
+        .select(`
+            *,
+            nurse:nurses (name),
+            supervisor:profiles (name),
+            scores:evaluation_scores ( score, item:evaluation_items (item_key) )
+        `);
+        
     if (error) throw new Error(error.message);
-    return data;
+
+    // @ts-ignore
+    return data.map(e => {
+        const scoresObj = e.scores.reduce((acc, s) => {
+            // @ts-ignore
+            acc[s.item.item_key] = s.score;
+            return acc;
+        }, {});
+        const final_score = Object.values(scoresObj).reduce((sum: number, score: any) => sum + score, 0) / Object.values(scoresObj).length;
+
+        return { 
+            ...e, 
+            nurse_name: e.nurse.name,
+            supervisor_name: e.supervisor.name,
+            scores: scoresObj,
+            final_score: isNaN(final_score) ? 0 : final_score,
+        };
+    });
 }
 
 export const getAllAudits = async (): Promise<Audit[]> => {

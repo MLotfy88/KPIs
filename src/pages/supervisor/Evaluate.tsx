@@ -13,7 +13,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { saveEvaluation } from '@/lib/api';
-import { calculateFinalScore } from '@/lib/calculations';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle } from 'lucide-react';
 
@@ -81,15 +80,14 @@ const Evaluate = () => {
 
     setIsSubmitting(true);
     try {
-      const final_score = calculateFinalScore(evaluationType, scores);
-
+      // The final_score is no longer calculated on the client-side.
+      // The new saveEvaluation function handles the new structure.
       await saveEvaluation({
         nurse_id: selectedNurse.id,
         supervisor_id: user.id,
         evaluation_type: evaluationType,
-        scores,
         notes,
-        final_score,
+        scores, // Pass scores object as per the new EvaluationSubmission type
       });
 
       toast({

@@ -22,16 +22,14 @@ CREATE TABLE IF NOT EXISTS public.nurses (
   CONSTRAINT nurses_pkey PRIMARY KEY (id)
 );
 
--- Create evaluations table
+-- Create evaluations table (modified to remove scores and final_score)
 CREATE TABLE IF NOT EXISTS public.evaluations (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   nurse_id uuid NOT NULL,
   supervisor_id uuid NOT NULL,
   evaluation_type character varying NOT NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
-  scores jsonb NOT NULL,
   notes text,
-  final_score numeric NOT NULL,
   CONSTRAINT evaluations_pkey PRIMARY KEY (id),
   CONSTRAINT evaluations_nurse_id_fkey FOREIGN KEY (nurse_id) REFERENCES nurses (id) ON DELETE CASCADE,
   CONSTRAINT evaluations_supervisor_id_fkey FOREIGN KEY (supervisor_id) REFERENCES profiles (id) ON DELETE CASCADE
@@ -51,26 +49,62 @@ CREATE TABLE IF NOT EXISTS public.audits (
   CONSTRAINT audits_auditor_id_fkey FOREIGN KEY (auditor_id) REFERENCES profiles (id) ON DELETE CASCADE
 );
 
--- Create badges table
-CREATE TABLE IF NOT EXISTS public.badges (
+-- Drop existing badge-related tables to recreate them with the new structure
+DROP TABLE IF EXISTS public.nurse_badges CASCADE;
+DROP TABLE IF EXISTS public.badges CASCADE;
+
+-- Create evaluation_items table to store individual evaluation metrics/indicators
+CREATE TABLE IF NOT EXISTS public.evaluation_items (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
-  name character varying NOT NULL,
-  description text,
-  icon character varying,
-  tiers jsonb,
-  CONSTRAINT badges_pkey PRIMARY KEY (id)
+  item_key character varying NOT NULL,
+  question text NOT NULL,
+  category character varying NOT NULL,
+  evaluation_types text[] NOT NULL, -- e.g., '{weekly, monthly}'
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT evaluation_items_pkey PRIMARY KEY (id),
+  CONSTRAINT evaluation_items_item_key_key UNIQUE (item_key)
 );
 
--- Create nurse_badges table
+-- Create evaluation_scores table to store scores for each item in an evaluation
+CREATE TABLE IF NOT EXISTS public.evaluation_scores (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  evaluation_id uuid NOT NULL,
+  item_id uuid NOT NULL,
+  score numeric NOT NULL,
+  CONSTRAINT evaluation_scores_pkey PRIMARY KEY (id),
+  CONSTRAINT evaluation_scores_evaluation_id_fkey FOREIGN KEY (evaluation_id) REFERENCES evaluations (id) ON DELETE CASCADE,
+  CONSTRAINT evaluation_scores_item_id_fkey FOREIGN KEY (item_id) REFERENCES evaluation_items (id) ON DELETE CASCADE
+);
+
+-- Create the new, more detailed badges table
+CREATE TABLE IF NOT EXISTS public.badges (
+  badge_id uuid NOT NULL DEFAULT gen_random_uuid(),
+  badge_name character varying NOT NULL,
+  badge_icon character varying,
+  description text,
+  linked_metrics text[] NOT NULL, -- Array of item_key from evaluation_items
+  criteria_type character varying NOT NULL, -- e.g., 'average', 'percentage', 'improvement'
+  thresholds jsonb NOT NULL, -- e.g., '{"gold": 95, "silver": 85}' or '{"value": 10, "operator": ">="}'
+  period_type character varying NOT NULL, -- e.g., 'weekly', 'monthly', 'quarterly', 'all_time'
+  active boolean NOT NULL DEFAULT true,
+  editable boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT badges_pkey PRIMARY KEY (badge_id)
+);
+
+-- Create the new nurse_badges table
 CREATE TABLE IF NOT EXISTS public.nurse_badges (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   nurse_id uuid NOT NULL,
   badge_id uuid NOT NULL,
-  tier character varying NOT NULL,
+  tier character varying, -- e.g., 'gold', 'silver'
   awarded_at timestamp with time zone NOT NULL DEFAULT now(),
+  evaluation_id uuid, -- The evaluation that triggered this award
   CONSTRAINT nurse_badges_pkey PRIMARY KEY (id),
   CONSTRAINT nurse_badges_nurse_id_fkey FOREIGN KEY (nurse_id) REFERENCES nurses (id) ON DELETE CASCADE,
-  CONSTRAINT nurse_badges_badge_id_fkey FOREIGN KEY (badge_id) REFERENCES badges (id) ON DELETE CASCADE
+  CONSTRAINT nurse_badges_badge_id_fkey FOREIGN KEY (badge_id) REFERENCES badges (badge_id) ON DELETE CASCADE,
+  CONSTRAINT nurse_badges_evaluation_id_fkey FOREIGN KEY (evaluation_id) REFERENCES evaluations (id) ON DELETE SET NULL
 );
 
 -- Create notifications table
@@ -119,6 +153,8 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.nurses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.evaluations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.evaluation_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.evaluation_scores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.badges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.nurse_badges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
@@ -158,7 +194,7 @@ CREATE POLICY "Allow managers to see all evaluations" ON public.evaluations FOR 
 -- Allow supervisors and managers to create evaluations
 DROP POLICY IF EXISTS "Allow supervisors and managers to create evaluations" ON public.evaluations;
 CREATE POLICY "Allow supervisors and managers to create evaluations" ON public.evaluations FOR INSERT WITH CHECK (
-  (public.get_user_role(auth.uid()) = 'supervisor' AND supervisor_id = new.supervisor_id)
+  (public.get_user_role(auth.uid()) = 'supervisor' AND supervisor_id = auth.uid())
   OR
   (public.get_user_role(auth.uid()) = 'manager')
 );
@@ -169,23 +205,38 @@ CREATE POLICY "Allow managers to manage audits" ON public.audits FOR ALL USING (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
 );
 
+-- Allow authenticated users to see evaluation items
+DROP POLICY IF EXISTS "Allow authenticated to see evaluation items" ON public.evaluation_items;
+CREATE POLICY "Allow authenticated to see evaluation items" ON public.evaluation_items FOR SELECT TO authenticated USING (true);
+
+-- Allow authenticated users to see evaluation scores
+DROP POLICY IF EXISTS "Allow authenticated to see evaluation scores" ON public.evaluation_scores;
+CREATE POLICY "Allow authenticated to see evaluation scores" ON public.evaluation_scores FOR SELECT TO authenticated USING (true);
+
+-- Allow supervisors and managers to insert evaluation scores
+DROP POLICY IF EXISTS "Allow supervisors and managers to insert evaluation scores" ON public.evaluation_scores;
+CREATE POLICY "Allow supervisors and managers to insert evaluation scores" ON public.evaluation_scores FOR INSERT WITH CHECK (
+  (public.get_user_role(auth.uid()) IN ('supervisor', 'manager'))
+);
+
 -- Allow authenticated users to see all badges
 DROP POLICY IF EXISTS "Allow authenticated users to see all badges" ON public.badges;
 CREATE POLICY "Allow authenticated users to see all badges" ON public.badges FOR SELECT TO authenticated USING (true);
 
 -- Allow managers to manage badges
-DROP POLICY IF EXISTS "Allow managers to manage badges" ON public.badges FOR ALL USING (
-  (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
+DROP POLICY IF EXISTS "Allow managers to manage badges" ON public.badges;
+CREATE POLICY "Allow managers to manage badges" ON public.badges FOR ALL USING (
+  (public.get_user_role(auth.uid()) = 'manager')
 );
 
 -- Allow authenticated users to see nurse badges
 DROP POLICY IF EXISTS "Allow authenticated users to see nurse badges" ON public.nurse_badges;
 CREATE POLICY "Allow authenticated users to see nurse badges" ON public.nurse_badges FOR SELECT TO authenticated USING (true);
 
--- Allow managers to award badges
+-- Allow managers to award badges (and system via triggers)
 DROP POLICY IF EXISTS "Allow managers to award badges" ON public.nurse_badges;
 CREATE POLICY "Allow managers to award badges" ON public.nurse_badges FOR INSERT WITH CHECK (
-  (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
+  (public.get_user_role(auth.uid()) = 'manager')
 );
 
 -- Allow users to see their own notifications
@@ -195,6 +246,16 @@ CREATE POLICY "Allow users to see their own notifications" ON public.notificatio
 -- Allow users to update their own notifications
 DROP POLICY IF EXISTS "Allow users to update their own notifications" ON public.notifications;
 CREATE POLICY "Allow users to update their own notifications" ON public.notifications FOR UPDATE USING (auth.uid() = "userId");
+
+-- Allow authenticated users to insert notifications
+DROP POLICY IF EXISTS "Allow authenticated users to insert notifications" ON public.notifications;
+CREATE POLICY "Allow authenticated users to insert notifications" ON public.notifications FOR INSERT WITH CHECK (
+  (auth.uid() = "userId") -- User can create notification for themselves
+  OR
+  (public.get_user_role(auth.uid()) = 'supervisor' AND EXISTS (SELECT 1 FROM public.profiles WHERE id = "userId" AND role = 'manager')) -- Supervisor can create notification for a manager
+  OR
+  (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'manager')) -- If the logged-in user is a manager, allow them to insert any notification
+);
 
 -- Allow managers to manage improvement plans
 DROP POLICY IF EXISTS "Allow managers to manage improvement plans" ON public.improvement_plans;
