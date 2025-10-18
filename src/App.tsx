@@ -61,11 +61,9 @@ const App = () => (
                     <Route path="/manager/supervisors" element={<SupervisorsPage />} />
                     <Route path="/manager/reports" element={<ReportsPage />} />
                     <Route path="/manager/badges" element={<BadgesPage />} />
+                    <Route path="/all-badges" element={<AllBadgesPage />} />
                   </Route>
                 </Route>
-                  
-                  {/* Routes accessible by both roles */}
-                  <Route path="/all-badges" element={<AllBadgesPage />} />
               </Route>
 
               {/* Catch-all Route */}
