@@ -149,7 +149,7 @@ const Evaluate = () => {
           </Card>
         );
       case 'FILL_FORM':
-        if (!evaluationType) return null;
+        if (!evaluationType || !selectedNurse) return null;
         return (
           <Card>
             <CardHeader>
@@ -159,7 +159,11 @@ const Evaluate = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <EvaluationForm evaluationType={evaluationType} onSubmit={handleSubmit} />
+              <EvaluationForm 
+                evaluationType={evaluationType} 
+                onSubmit={handleSubmit}
+                nurseName={selectedNurse.name}
+              />
             </CardContent>
           </Card>
         );
