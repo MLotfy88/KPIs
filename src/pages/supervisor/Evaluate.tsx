@@ -198,7 +198,7 @@ const Evaluate = () => {
   };
 
   return (
-    <div className="container max-w-4xl mx-auto p-4">
+    <div className="container max-w-4xl mx-auto p-2 sm:p-4">
       {renderStep()}
     </div>
   );

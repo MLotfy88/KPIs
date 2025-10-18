@@ -2,7 +2,7 @@
 -- in the public.profiles table whenever a new user signs up in auth.users.
 
 -- 1. Create a function that inserts a new row into public.profiles
-create function public.handle_new_user()
+create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
 security definer set search_path = public
