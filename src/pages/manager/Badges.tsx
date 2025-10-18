@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { getBadges, addBadge, updateBadge, deleteBadge } from '@/lib/api';
-import { Badge as BadgeType } from '@/types';
+import { Badge as BadgeType, BadgeIcon, BadgeColor } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, PlusCircle, Edit, Trash2, Award } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Loader2, PlusCircle, Edit, Trash2, Award, Star, Zap, Shield, TrendingUp } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import BadgeFormDialog from '@/components/manager/BadgeFormDialog';
+
+const icons: Record<BadgeIcon, React.ReactNode> = {
+  Award: <Award className="h-6 w-6" />,
+  Star: <Star className="h-6 w-6" />,
+  Zap: <Zap className="h-6 w-6" />,
+  Shield: <Shield className="h-6 w-6" />,
+  TrendingUp: <TrendingUp className="h-6 w-6" />,
+};
+
+const badgeColors: Record<BadgeColor, string> = {
+  bronze: 'text-[#cd7f32]',
+  silver: 'text-gray-400',
+  gold: 'text-yellow-500',
+  platinum: 'text-blue-300',
+};
 
 const BadgesPage: React.FC = () => {
   const [badges, setBadges] = useState<BadgeType[]>([]);
@@ -43,20 +48,14 @@ const BadgesPage: React.FC = () => {
     fetchBadges();
   }, []);
 
-  const handleSave = async () => {
-    if (!currentBadge || !currentBadge.name || !currentBadge.description) {
-      toast({ title: 'خطأ', description: 'الرجاء ملء جميع الحقول.', variant: 'destructive' });
-      return;
-    }
-
+  const handleSave = async (badgeData: Partial<BadgeType>) => {
     setIsSaving(true);
     try {
-      if (currentBadge.id) {
-        await updateBadge(currentBadge.id, currentBadge);
+      if (badgeData.id) {
+        await updateBadge(badgeData.id, badgeData);
         toast({ title: 'نجاح', description: 'تم تحديث الشارة بنجاح.' });
       } else {
-        // @ts-ignore
-        await addBadge(currentBadge);
+        await addBadge(badgeData as BadgeType);
         toast({ title: 'نجاح', description: 'تمت إضافة الشارة بنجاح.' });
       }
       setIsDialogOpen(false);
@@ -81,40 +80,33 @@ const BadgesPage: React.FC = () => {
     }
   };
 
+  const handleAddNew = () => {
+    setCurrentBadge({
+      name: '',
+      description: '',
+      icon: 'Award',
+      tiers: [{ name: 'bronze', criteria: { type: 'average_score', value: 70, operator: 'gte' } }],
+    });
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">إدارة الشارات</h1>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setCurrentBadge({ name: '', description: '', tiers: [{ name: 'bronze', criteria: { type: 'average_score', value: 70 } }, { name: 'silver', criteria: { type: 'average_score', value: 80 } }, { name: 'gold', criteria: { type: 'average_score', value: 90 } }] })}>
-              <PlusCircle className="ml-2 h-4 w-4" />
-              إضافة شارة جديدة
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{currentBadge?.id ? 'تعديل الشارة' : 'شارة جديدة'}</DialogTitle>
-              <DialogDescription>أدخل تفاصيل الشارة هنا.</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div>
-                <Label htmlFor="name">اسم الشارة</Label>
-                <Input id="name" value={currentBadge?.name || ''} onChange={(e) => setCurrentBadge({ ...currentBadge, name: e.target.value })} />
-              </div>
-              <div>
-                <Label htmlFor="description">الوصف</Label>
-                <Input id="description" value={currentBadge?.description || ''} onChange={(e) => setCurrentBadge({ ...currentBadge, description: e.target.value })} />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button onClick={handleSave} disabled={isSaving}>
-                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'حفظ'}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={handleAddNew}>
+          <PlusCircle className="ml-2 h-4 w-4" />
+          إضافة شارة جديدة
+        </Button>
       </div>
+
+      <BadgeFormDialog
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onSave={handleSave}
+        badge={currentBadge}
+        isSaving={isSaving}
+      />
 
       {loading && (
         <div className="flex justify-center items-center h-64">
@@ -130,7 +122,9 @@ const BadgesPage: React.FC = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Award className="h-6 w-6 text-primary" />
+                    <span className={badgeColors[badge.tiers[0]?.name || 'bronze']}>
+                      {icons[badge.icon]}
+                    </span>
                     <span>{badge.name}</span>
                   </div>
                   <div className="flex gap-2">
@@ -145,6 +139,17 @@ const BadgesPage: React.FC = () => {
               </CardHeader>
               <CardContent className="flex-grow">
                 <p className="text-sm text-muted-foreground">{badge.description}</p>
+                <div className="mt-4 space-y-2">
+                  <h4 className="text-xs font-semibold uppercase text-muted-foreground">المستويات</h4>
+                  {badge.tiers.map(tier => (
+                    <div key={tier.name} className="flex items-center gap-2 text-xs">
+                      <span className={`font-bold ${badgeColors[tier.name]}`}>{tier.name}</span>
+                      <span className="text-muted-foreground">
+                        ({tier.criteria.type === 'average_score' ? 'متوسط' : 'استمرارية'} >= {tier.criteria.value})
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           ))}

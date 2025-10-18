@@ -4,6 +4,7 @@ import { getUserByEmail } from '@/lib/api';
 import { User } from '@/types';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import { MODE } from '@/config';
+import { seedBadges } from '@/lib/seedBadges';
 
 interface AuthContextType {
   user: User | null;
@@ -107,6 +108,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Explicitly fetch profile after login to ensure user state is set
       await fetchUserProfile(authData.user);
+
+      // Seed badges if the user is a manager
+      const { data } = await supabase.from('profiles').select('role').eq('id', authData.user.id).single();
+      if (data?.role === 'manager') {
+        await seedBadges();
+      }
 
       return { success: true };
     }
