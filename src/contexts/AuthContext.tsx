@@ -19,39 +19,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (MODE === 'supabase') {
-      const getSession = async () => {
+    const checkUser = async () => {
+      if (MODE === 'supabase') {
         try {
           const { data: { session }, error } = await supabase.auth.getSession();
           if (error) throw error;
-          if (session) {
+          if (session?.user) {
             await fetchUserProfile(session.user);
-          } else {
-            setIsLoading(false);
           }
         } catch (error) {
-          console.error("Error getting session on initial load:", error);
+          console.error("Error in initial session check:", error);
+        } finally {
           setIsLoading(false);
         }
-      };
 
-      getSession();
+        const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+          if (session?.user) {
+            await fetchUserProfile(session.user);
+          } else {
+            setUser(null);
+          }
+        });
 
-      const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-        if (session) {
-          await fetchUserProfile(session.user);
-        } else {
-          setUser(null);
-        }
-      });
+        return () => {
+          authListener.subscription.unsubscribe();
+        };
+      } else {
+        setIsLoading(false);
+      }
+    };
 
-      return () => {
-        authListener.subscription.unsubscribe();
-      };
-    } else {
-      // In local mode, we don't need to check for a session on load.
-      setIsLoading(false);
-    }
+    checkUser();
   }, []);
 
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {

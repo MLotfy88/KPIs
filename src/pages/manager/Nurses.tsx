@@ -458,11 +458,9 @@ const NursesPage: React.FC = () => {
                         {nurse.is_active ? 'جعله غير نشط' : 'جعله نشط'}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem className="text-red-600 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2" onClick={() => setNurseToDelete(nurse)}>
-                          حذف
-                        </DropdownMenuItem>
-                      </AlertDialogTrigger>
+                      <DropdownMenuItem className="text-red-600 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2" onClick={() => setNurseToDelete(nurse)}>
+                        حذف
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
