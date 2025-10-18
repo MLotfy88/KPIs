@@ -5,9 +5,9 @@ import { loadInProgressEvaluation, saveInProgressEvaluation } from '@/lib/storag
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { RatingCircles } from '@/components/ui/rating-circles';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface EvaluationFormProps {
@@ -51,47 +51,32 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
     onSubmit(scores, notes);
   };
 
-  const groupedItems = useMemo(() => {
-    if (evaluationType === 'weekly') {
-      return { 'التقييم الأسبوعي': items };
-    }
-    return items.reduce((acc, item) => {
-      const category = item.category || 'عام';
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(item);
-      return acc;
-    }, {} as Record<string, EvaluationItem[]>);
-  }, [items, evaluationType]);
+  const renderEvaluationItem = (item: EvaluationItem) => (
+    <div key={item.id} className="p-4 md:p-6 rounded-lg bg-muted/50 mb-4">
+      <p className="font-bold mb-4 text-lg md:text-xl">{item.id}. {item.text}</p>
+      <RadioGroup
+        value={scores[item.id]?.toString() || ''}
+        onValueChange={(value) => handleScoreChange(item.id, parseInt(value, 10))}
+        className="space-y-4"
+      >
+        {item.rubrics && Object.entries(item.rubrics).map(([score, description]) => (
+          <div key={score} className="flex items-start space-x-3 space-x-reverse p-3 rounded-md transition-colors hover:bg-background">
+            <RadioGroupItem value={score} id={`item-${item.id}-score-${score}`} className="mt-1" />
+            <Label htmlFor={`item-${item.id}-score-${score}`} className="flex-1 text-right font-bold">
+              <span className="font-bold text-primary text-lg">{score}</span>: {description}
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
+    </div>
+  );
 
   const renderMobileView = () => {
     const currentItem = items[currentStep];
     return (
-      <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>تقييم: {nurseName}</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {evaluationType === 'weekly' ? 'تقييم أسبوعي' : 'تقييم شهري'} - سؤال {currentStep + 1} من {items.length}
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div key={currentItem.id} className="p-4 rounded-lg bg-muted/50">
-              <p className="font-semibold mb-3">{currentItem.id}. {currentItem.text}</p>
-              <RatingCircles
-                value={scores[currentItem.id] || 0}
-                onChange={(value) => handleScoreChange(currentItem.id, value)}
-              />
-              <div className="grid grid-cols-5 gap-1 text-xs text-center text-muted-foreground mt-2">
-                {currentItem.rubrics && Object.entries(currentItem.rubrics).map(([score, description]) => (
-                  <div key={score}>{description}</div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <div className="flex justify-between">
+      <>
+        {renderEvaluationItem(currentItem)}
+        <div className="flex justify-between mt-6">
           <Button onClick={() => setCurrentStep(s => s - 1)} disabled={currentStep === 0}>
             السابق
           </Button>
@@ -105,40 +90,14 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
             </Button>
           )}
         </div>
-      </div>
+      </>
     );
   };
 
   const renderDesktopView = () => (
     <>
-      <Accordion type="multiple" defaultValue={Object.keys(groupedItems)} className="w-full space-y-4">
-        {Object.entries(groupedItems).map(([category, categoryItems]) => (
-          <Card key={category} as="div">
-            <AccordionItem value={category} className="border-0">
-              <AccordionTrigger className="p-6">
-                <h3 className="text-xl font-bold">{category}</h3>
-              </AccordionTrigger>
-              <AccordionContent className="px-6 pb-6 space-y-4">
-                {categoryItems.map((item, index) => (
-                  <div key={item.id} className={`p-4 rounded-lg ${index % 2 === 0 ? 'bg-muted/50' : ''}`}>
-                    <p className="font-semibold mb-3">{item.id}. {item.text}</p>
-                    <RatingCircles
-                      value={scores[item.id] || 0}
-                      onChange={(value) => handleScoreChange(item.id, value)}
-                    />
-                    <div className="grid grid-cols-5 gap-1 text-xs text-center text-muted-foreground mt-2">
-                      {item.rubrics && Object.entries(item.rubrics).map(([score, description]) => (
-                        <div key={score}>{description}</div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-          </Card>
-        ))}
-      </Accordion>
-      <Card>
+      {items.map(item => renderEvaluationItem(item))}
+      <Card className="mt-6">
         <CardHeader>
           <CardTitle>الملاحظات العامة</CardTitle>
         </CardHeader>
@@ -151,31 +110,28 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
           />
         </CardContent>
       </Card>
-      <Button onClick={handleSubmit} size="lg" className="w-full" disabled={completedItems < items.length}>
+      <Button onClick={handleSubmit} size="lg" className="w-full mt-6" disabled={completedItems < items.length}>
         إرسال التقييم
       </Button>
     </>
   );
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>تقدم التقييم</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <Progress value={progress} />
-            <span className="font-bold text-primary">{Math.round(progress)}%</span>
-          </div>
-          <p className="text-sm text-muted-foreground mt-2">
-            {completedItems} / {items.length} بنود مكتملة
-          </p>
-        </CardContent>
-      </Card>
-
-      {isMobile ? renderMobileView() : renderDesktopView()}
-    </div>
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl md:text-3xl font-bold">تقييم: {nurseName}</CardTitle>
+        <CardDescription className="text-base">
+          {evaluationType === 'weekly' ? 'تقييم أسبوعي' : 'تقييم شهري'} - ({completedItems} / {items.length} مكتمل)
+        </CardDescription>
+        <div className="flex items-center gap-4 pt-4 w-full max-w-md mx-auto">
+          <Progress value={progress} />
+          <span className="font-bold text-primary text-lg">{Math.round(progress)}%</span>
+        </div>
+      </CardHeader>
+      <CardContent className="p-4 md:p-6">
+        {isMobile ? renderMobileView() : renderDesktopView()}
+      </CardContent>
+    </Card>
   );
 };
 

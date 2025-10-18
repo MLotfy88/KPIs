@@ -9,12 +9,14 @@ import {
   SidebarMenuButton 
 } from "@/components/ui/sidebar";
 import { Header } from "@/components/ui/header";
-import { Home, Users, BarChart2, FileCheck, UserCog, Award, Library, ClipboardEdit } from "lucide-react";
+import { Home, Users, BarChart2, FileCheck, UserCog, Award, Library, ClipboardEdit, History, LayoutDashboard } from "lucide-react";
 
 const ManagerLayout: React.FC = () => {
   const navLinks = [
-    { href: "/manager/dashboard", label: "لوحة التحكم", icon: <Home /> },
-    { href: "/supervisor/dashboard", label: "إجراء تقييم", icon: <ClipboardEdit /> },
+    { href: "/manager/dashboard", label: "لوحة تحكم المدير", icon: <Home /> },
+    { href: "/manager/supervisor-dashboard", label: "لوحة تحكم المشرف", icon: <LayoutDashboard /> },
+    { href: "/manager/evaluate", label: "إجراء تقييم", icon: <ClipboardEdit /> },
+    { href: "/manager/history", label: "سجل التقييمات", icon: <History /> },
     { href: "/manager/nurses", label: "فريق التمريض", icon: <Users /> },
     { href: "/manager/supervisors", label: "إدارة المشرفين", icon: <UserCog /> },
     { href: "/manager/audits", label: "المراجعات العشوائية", icon: <FileCheck /> },

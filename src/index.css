@@ -86,5 +86,24 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: "Tajawal", sans-serif;
+  }
+
+  /* Responsive Typography */
+  h1 {
+    @apply text-2xl font-bold md:text-3xl;
+  }
+  h2 {
+    @apply text-xl font-bold md:text-2xl;
+  }
+  h3 {
+    @apply text-lg font-semibold md:text-xl;
+  }
+
+  /* Better touch targets for buttons on mobile */
+  @media (max-width: 768px) {
+    .btn {
+      @apply p-4 text-base;
+    }
   }
 }
