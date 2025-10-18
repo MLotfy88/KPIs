@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   saveInProgressEvaluation,
   loadInProgressEvaluation,
@@ -20,18 +20,21 @@ import { CheckCircle } from 'lucide-react';
 type EvaluationStep = 'SELECT_NURSE' | 'SELECT_TYPE' | 'FILL_FORM' | 'CONFIRMATION';
 
 const Evaluate = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const preselectedType = location.state?.evaluationType as EvaluationType | undefined;
+
   const [step, setStep] = useState<EvaluationStep>('SELECT_NURSE');
   const [selectedNurse, setSelectedNurse] = useState<Nurse | null>(null);
-  const [evaluationType, setEvaluationType] = useState<EvaluationType | null>(null);
+  const [evaluationType, setEvaluationType] = useState<EvaluationType | null>(preselectedType || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   // Load saved evaluation on mount
   useEffect(() => {
     const savedEvaluation = loadInProgressEvaluation();
-    if (savedEvaluation?.nurse) {
+    if (savedEvaluation?.nurse && !preselectedType) { // Only prompt if not coming from a direct link
       if (window.confirm('لديك تقييم غير مكتمل. هل تود استكماله؟')) {
         setSelectedNurse(savedEvaluation.nurse);
         if (savedEvaluation.evaluationType) {
@@ -43,8 +46,11 @@ const Evaluate = () => {
       } else {
         clearInProgressEvaluation();
       }
+    } else if (preselectedType) {
+      // If a type is preselected, clear any old in-progress evaluations
+      clearInProgressEvaluation();
     }
-  }, []);
+  }, [preselectedType]);
 
   // Save progress whenever nurse or type changes
   useEffect(() => {
@@ -59,7 +65,11 @@ const Evaluate = () => {
 
   const handleNurseSelect = (nurse: Nurse) => {
     setSelectedNurse(nurse);
-    setStep('SELECT_TYPE');
+    if (evaluationType) {
+      setStep('FILL_FORM');
+    } else {
+      setStep('SELECT_TYPE');
+    }
   };
 
   const handleTypeSelect = (type: EvaluationType) => {

@@ -112,8 +112,8 @@ const ManagerDashboard = () => {
           <CategoryCharts evaluations={evaluations} />
         </div>
         <div className="space-y-6">
-          <TopPerformers evaluations={evaluations} nurses={nurses} />
-          <NeedsAttention evaluations={evaluations} nurses={nurses} />
+          <TopPerformers topPerformers={nursePerformance.slice(0, 3)} />
+          <NeedsAttention needsAttention={nursePerformance.slice(-3).reverse()} />
         </div>
       </div>
     </div>

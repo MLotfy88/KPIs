@@ -1,39 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Evaluation, User, Nurse } from '@/types';
-import { useMemo } from 'react';
+import { Nurse } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 interface NeedsAttentionProps {
-  evaluations: Evaluation[];
-  nurses: (User | Nurse)[];
+  needsAttention: (Nurse & { average_score: number })[];
 }
 
-const NeedsAttention = ({ evaluations, nurses }: NeedsAttentionProps) => {
-  const needsAttention = useMemo(() => {
-    const nurseScores: { [key: number]: { total: number; count: number; name: string; photo_url: string } } = {};
-
-    evaluations.forEach(e => {
-      if (!nurseScores[e.nurse_id]) {
-        const nurse = nurses.find(n => n.id === e.nurse_id);
-        nurseScores[e.nurse_id] = { total: 0, count: 0, name: nurse?.name || 'Unknown', photo_url: nurse?.photo_url || '' };
-      }
-      nurseScores[e.nurse_id].total += e.final_score;
-      nurseScores[e.nurse_id].count++;
-    });
-
-    return Object.entries(nurseScores)
-      .map(([id, data]) => ({
-        id: parseInt(id),
-        name: data.name,
-        photo_url: data.photo_url,
-        average: data.count > 0 ? data.total / data.count : 0,
-      }))
-      .sort((a, b) => a.average - b.average)
-      .slice(0, 3);
-  }, [evaluations, nurses]);
-
+const NeedsAttention = ({ needsAttention }: NeedsAttentionProps) => {
   return (
     <Card>
       <CardHeader>
@@ -52,7 +27,7 @@ const NeedsAttention = ({ evaluations, nurses }: NeedsAttentionProps) => {
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="destructive">
-                  {nurse.average.toFixed(1)}%
+                  {nurse.average_score.toFixed(1)}%
                 </Badge>
                 <Button variant="outline" size="sm">
                   خطة تحسين

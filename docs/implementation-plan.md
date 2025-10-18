@@ -65,35 +65,35 @@
 **الهدف:** إنشاء البنية الأساسية لقاعدة البيانات
 
 **المهام الفرعية:**
-- [ ] إنشاء جدول profiles
-  - [ ] إضافة حقل role (manager/supervisor)
-  - [ ] إضافة حقول إضافية (name, phone, etc.)
-  - [ ] ربطه بـ auth.users
+- [x] إنشاء جدول profiles
+  - [x] إضافة حقل role (manager/supervisor)
+  - [x] إضافة حقول إضافية (name, phone, etc.)
+  - [x] ربطه بـ auth.users عبر Trigger
 
-- [ ] إنشاء جدول nurses
-  - [ ] id, name, photo_url, is_active
-  - [ ] created_at, updated_at
-  - [ ] metadata إضافي إذا لزم
+- [x] إنشاء جدول nurses
+  - [x] id, name, photo_url, is_active
+  - [x] created_at, updated_at
+  - [x] metadata إضافي إذا لزم
 
-- [ ] إنشاء جدول evaluations
-  - [ ] id, nurse_id, supervisor_id
-  - [ ] type (weekly/monthly)
-  - [ ] evaluation_date
-  - [ ] scores (JSONB)
-  - [ ] notes (JSONB)
-  - [ ] final_score (calculated)
+- [x] إنشاء جدول evaluations
+  - [x] id, nurse_id, supervisor_id
+  - [x] type (weekly/monthly)
+  - [x] evaluation_date
+  - [x] scores (JSONB)
+  - [x] notes (JSONB)
+  - [x] final_score (calculated)
 
-- [ ] إنشاء جدول audits
-  - [ ] id, evaluation_id, auditor_id
-  - [ ] is_match, auditor_notes, decision
+- [x] إنشاء جدول audits
+  - [x] id, evaluation_id, auditor_id
+  - [x] is_match, auditor_notes, decision
 
 ### 2.2 Row Level Security (RLS)
 **المهام الفرعية:**
-- [ ] إنشاء policies للمديرين (قراءة/كتابة كاملة)
-- [ ] إنشاء policies للمشرفين (قراءة/كتابة محدودة)
-- [ ] إنشاء policies لجدول nurses
-- [ ] إنشاء policies لجدول evaluations
-- [ ] إنشاء policies لجدول audits
+- [x] إنشاء policies للمديرين (قراءة/كتابة كاملة)
+- [x] إنشاء policies للمشرفين (قراءة/كتابة محدودة)
+- [x] إنشاء policies لجدول nurses
+- [x] إنشاء policies لجدول evaluations
+- [x] إنشاء policies لجدول audits
 
 ### 2.3 نظام المصادقة
 **المهام الفرعية:**
@@ -363,7 +363,7 @@
 **المهام الفرعية:**
 - [ ] تحسين أداء الاستعلامات
 - [ ] إضافة Caching للبيانات المتكررة
-- [x] التأكد من أن التطبيق بالكامل يعمل ببيانات حقيقية وليس بيانات وهمية
+- [x] التأكد من أن التطبيق بالكامل يعمل ببيانات حقيقية وليس بيانات وهمية (تم الانتقال بالكامل إلى Supabase)
 - [ ] تحسين تحميل الصور (lazy loading)
 - [ ] تقليل حجم الحزمة (bundle size)
 - [ ] تحسين الأداء على الهواتف
@@ -544,7 +544,3 @@
 هذه الخطة توفر roadmap شاملة لتطوير منصة "أداء". يجب مراجعتها وتحديثها بشكل دوري حسب التقدم الفعلي وأي تغييرات في المتطلبات.
 
 **تاريخ آخر تحديث**: ${new Date().toLocaleDateString('ar-SA')}
-
-
-
-

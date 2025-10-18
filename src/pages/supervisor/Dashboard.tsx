@@ -81,14 +81,25 @@ const SupervisorDashboard = () => {
             </Button>
           </CardHeader>
           <CardContent>
-            <Button
-              onClick={() => navigate('/supervisor/evaluate')}
-              size="lg"
-              className="w-full h-16 text-lg"
-            >
-              <Plus className="mr-2 h-5 w-5" />
-              ابدأ تقييم جديد
-            </Button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Button
+                onClick={() => navigate('/supervisor/evaluate', { state: { evaluationType: 'weekly' } })}
+                size="lg"
+                className="h-16 text-lg"
+                variant="outline"
+              >
+                <Plus className="ml-2 h-5 w-5" />
+                تقييم أسبوعي جديد
+              </Button>
+              <Button
+                onClick={() => navigate('/supervisor/evaluate', { state: { evaluationType: 'monthly' } })}
+                size="lg"
+                className="h-16 text-lg"
+              >
+                <Plus className="ml-2 h-5 w-5" />
+                تقييم شهري جديد
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -15,15 +15,17 @@ import * as z from "zod";
 import { getAllNurses, addNurse, getAllEvaluations, updateNurse, deleteNurse } from '@/lib/api';
 import { Nurse, Evaluation } from '@/types';
 import { Loader2, Search, ArrowUpDown, PlusCircle, MoreHorizontal, ArrowUp, ArrowDown } from 'lucide-react';
-const AlertDialog = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialog })));
-const AlertDialogAction = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialogAction })));
-const AlertDialogCancel = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialogCancel })));
-const AlertDialogContent = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialogContent })));
-const AlertDialogDescription = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialogDescription })));
-const AlertDialogFooter = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialogFooter })));
-const AlertDialogHeader = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialogHeader })));
-const AlertDialogTitle = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialogTitle })));
-const AlertDialogTrigger = lazy(() => import("@/components/ui/alert-dialog").then(module => ({ default: module.AlertDialogTrigger })));
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,13 +46,15 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-const Dialog = lazy(() => import("@/components/ui/dialog").then(module => ({ default: module.Dialog })));
-const DialogContent = lazy(() => import("@/components/ui/dialog").then(module => ({ default: module.DialogContent })));
-const DialogDescription = lazy(() => import("@/components/ui/dialog").then(module => ({ default: module.DialogDescription })));
-const DialogFooter = lazy(() => import("@/components/ui/dialog").then(module => ({ default: module.DialogFooter })));
-const DialogHeader = lazy(() => import("@/components/ui/dialog").then(module => ({ default: module.DialogHeader })));
-const DialogTitle = lazy(() => import("@/components/ui/dialog").then(module => ({ default: module.DialogTitle })));
-const DialogTrigger = lazy(() => import("@/components/ui/dialog").then(module => ({ default: module.DialogTrigger })));
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -296,83 +300,81 @@ const NursesPage: React.FC = () => {
     <div className="container mx-auto p-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold">إدارة فريق التمريض</h1>
-        <Suspense fallback={<Button disabled>...تحميل</Button>}>
-          <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {
-            setIsDialogOpen(isOpen);
-            if (!isOpen) {
-              setEditingNurse(null);
-              form.reset();
-            }
-          }}>
-            <DialogTrigger asChild>
-              <Button>
-                <PlusCircle className="ml-2 h-4 w-4" />
-                إضافة ممرض جديد
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>{editingNurse ? 'تعديل بيانات الممرض' : 'إضافة ممرض جديد'}</DialogTitle>
-                <DialogDescription>
-                  {editingNurse ? 'قم بتحديث بيانات الممرض هنا.' : 'أدخل بيانات الممرض الجديد هنا.'}
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>الاسم</FormLabel>
-                        <FormControl>
-                          <Input placeholder="اسم الممرض" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="photo_url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>رابط الصورة</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://example.com/image.png" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="is_active"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <div className="space-y-0.5">
-                          <FormLabel>الحالة</FormLabel>
-                        </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <DialogFooter>
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
-                      حفظ
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
-        </Suspense>
+        <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {
+          setIsDialogOpen(isOpen);
+          if (!isOpen) {
+            setEditingNurse(null);
+            form.reset();
+          }
+        }}>
+          <DialogTrigger asChild>
+            <Button>
+              <PlusCircle className="ml-2 h-4 w-4" />
+              إضافة ممرض جديد
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>{editingNurse ? 'تعديل بيانات الممرض' : 'إضافة ممرض جديد'}</DialogTitle>
+              <DialogDescription>
+                {editingNurse ? 'قم بتحديث بيانات الممرض هنا.' : 'أدخل بيانات الممرض الجديد هنا.'}
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>الاسم</FormLabel>
+                      <FormControl>
+                        <Input placeholder="اسم الممرض" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="photo_url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>رابط الصورة</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://example.com/image.png" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="is_active"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>الحالة</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <DialogFooter>
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+                    حفظ
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
       
       <div className="bg-white rounded-lg shadow-md p-4">
@@ -489,25 +491,23 @@ const NursesPage: React.FC = () => {
           </Pagination>
         </div>
       </div>
-      <Suspense fallback={null}>
-        <AlertDialog open={!!nurseToDelete} onOpenChange={(isOpen) => !isOpen && setNurseToDelete(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
-              <AlertDialogDescription>
-                هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف الممرض بشكل دائم
-                ({nurseToDelete?.name}) وجميع بياناته المرتبطة به.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>إلغاء</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-                نعم، قم بالحذف
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </Suspense>
+      <AlertDialog open={!!nurseToDelete} onOpenChange={(isOpen) => !isOpen && setNurseToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
+            <AlertDialogDescription>
+              هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف الممرض بشكل دائم
+              ({nurseToDelete?.name}) وجميع بياناته المرتبطة به.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+              نعم، قم بالحذف
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
