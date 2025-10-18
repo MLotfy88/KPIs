@@ -94,7 +94,7 @@ const EvaluationForm = ({ evaluationType, onSubmit }: EvaluationFormProps) => {
                       onChange={(value) => handleScoreChange(item.id, value)}
                     />
                     <div className="grid grid-cols-5 gap-1 text-xs text-center text-muted-foreground mt-2">
-                      {item.rubrics.map(rubric => (
+                      {item.rubrics?.map(rubric => (
                         <div key={rubric.score}>{rubric.description}</div>
                       ))}
                     </div>

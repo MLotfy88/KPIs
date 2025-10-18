@@ -45,8 +45,9 @@ export interface Audit {
 export interface EvaluationItem {
   id: number;
   text: string;
-  category: 'technical' | 'behavioral' | 'care' | 'initiative';
+  category: 'technical' | 'behavioral' | 'care' | 'initiative' | 'general';
   weight?: number;
+  rubrics: { score: number; description: string }[];
 }
 
 export type BadgeIcon = 'Award' | 'Star' | 'Zap' | 'Shield' | 'TrendingUp';
