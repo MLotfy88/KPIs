@@ -22,6 +22,7 @@ const AuditsPage = lazy(() => import("./pages/manager/Audits"));
 const SupervisorsPage = lazy(() => import("./pages/manager/Supervisors"));
 const ReportsPage = lazy(() => import("./pages/manager/Reports"));
 const BadgesPage = lazy(() => import("./pages/manager/Badges"));
+const LeaderboardPage = lazy(() => import("./pages/manager/Leaderboard"));
 const AllBadgesPage = lazy(() => import("./pages/AllBadges"));
 const Evaluate = lazy(() => import("./pages/supervisor/Evaluate"));
 const SupervisorHistory = lazy(() => import("./pages/supervisor/History"));
@@ -69,6 +70,7 @@ const App = () => (
                     <Route path="/manager/supervisors" element={<SupervisorsPage />} />
                     <Route path="/manager/reports" element={<ReportsPage />} />
                     <Route path="/manager/badges" element={<BadgesPage />} />
+                    <Route path="/manager/leaderboard" element={<LeaderboardPage />} />
                     <Route path="/all-badges" element={<AllBadgesPage />} />
                     <Route path="/manager/evaluate" element={<Evaluate />} />
                     <Route path="/manager/history" element={<SupervisorHistory />} />

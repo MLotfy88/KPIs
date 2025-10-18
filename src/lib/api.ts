@@ -383,3 +383,33 @@ export const updateImprovementPlan = async (planId: string, updateData: Partial<
   if (error) throw new Error(error.message);
   return data;
 };
+
+// --- Leaderboard Functions ---
+
+export interface LeaderboardEntry {
+  nurse_id: string;
+  nurse_name: string;
+  nurse_photo_url?: string;
+  week1_score: number | null;
+  week2_score: number | null;
+  week3_score: number | null;
+  week4_score: number | null;
+  monthly_score: number;
+  week1_change: number | null;
+  week2_change: number | null;
+  week3_change: number | null;
+  week4_change: number | null;
+  monthly_change: number | null;
+  badges: { name: string; icon: string; tier: string }[];
+}
+
+export const getMonthlyLeaderboard = async (): Promise<LeaderboardEntry[]> => {
+  const { data, error } = await supabase.rpc('get_monthly_leaderboard');
+
+  if (error) {
+    console.error('Error fetching monthly leaderboard:', error);
+    throw new Error(error.message);
+  }
+  
+  return data;
+};
