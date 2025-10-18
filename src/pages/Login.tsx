@@ -66,7 +66,7 @@ const Login = () => {
             <Activity className="w-8 h-8 text-primary-foreground" />
           </div>
           <CardTitle className="text-2xl font-bold">منصة تقييم الاداء</CardTitle>
-          <CardDescription className="text-base">
+          <CardDescription className="text-sm md:text-base">
             نظام تقييم وتطوير تمريض وحدة القسطرة
           </CardDescription>
         </CardHeader>

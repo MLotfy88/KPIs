@@ -50,8 +50,8 @@ const App = () => (
                 <Route element={<ProtectedRoute />}>
                   <Route path="/" element={<Index />} />
                   
-                {/* Supervisor & Manager Evaluation Routes */}
-                <Route element={<RoleBasedRoute allowedRoles={['supervisor', 'manager']} />}>
+                {/* Supervisor Routes */}
+                <Route element={<RoleBasedRoute allowedRoles={['supervisor']} />}>
                   <Route element={<SupervisorLayout />}>
                     <Route path="/supervisor/dashboard" element={<SupervisorDashboard />} />
                     <Route path="/supervisor/evaluate" element={<Evaluate />} />
@@ -59,22 +59,22 @@ const App = () => (
                   </Route>
                 </Route>
 
-                  {/* Manager Routes */}
-                  <Route element={<RoleBasedRoute allowedRoles={['manager']} />}>
-                    <Route element={<ManagerLayout />}>
-                      <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-                      <Route path="/manager/nurses" element={<NursesPage />} />
-                      <Route path="/manager/nurses/:id" element={<NurseProfilePage />} />
-                      <Route path="/manager/audits" element={<AuditsPage />} />
-                      <Route path="/manager/supervisors" element={<SupervisorsPage />} />
-                      <Route path="/manager/reports" element={<ReportsPage />} />
-                      <Route path="/manager/badges" element={<BadgesPage />} />
-                      <Route path="/all-badges" element={<AllBadgesPage />} />
-                      <Route path="/manager/evaluate" element={<Evaluate />} />
-                      <Route path="/manager/history" element={<SupervisorHistory />} />
-                      <Route path="/manager/supervisor-dashboard" element={<SupervisorDashboard />} />
-                    </Route>
+                {/* Manager Routes */}
+                <Route element={<RoleBasedRoute allowedRoles={['manager']} />}>
+                  <Route element={<ManagerLayout />}>
+                    <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+                    <Route path="/manager/nurses" element={<NursesPage />} />
+                    <Route path="/manager/nurses/:id" element={<NurseProfilePage />} />
+                    <Route path="/manager/audits" element={<AuditsPage />} />
+                    <Route path="/manager/supervisors" element={<SupervisorsPage />} />
+                    <Route path="/manager/reports" element={<ReportsPage />} />
+                    <Route path="/manager/badges" element={<BadgesPage />} />
+                    <Route path="/all-badges" element={<AllBadgesPage />} />
+                    <Route path="/manager/evaluate" element={<Evaluate />} />
+                    <Route path="/manager/history" element={<SupervisorHistory />} />
+                    <Route path="/manager/supervisor-dashboard" element={<SupervisorDashboard />} />
                   </Route>
+                </Route>
                 </Route>
 
                 {/* Catch-all Route */}

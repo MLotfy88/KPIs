@@ -12,6 +12,7 @@ export interface User {
 export interface Nurse {
   id: string;
   name: string;
+  gender: 'male' | 'female';
   photo_url?: string;
   is_active: boolean;
   created_at: string;

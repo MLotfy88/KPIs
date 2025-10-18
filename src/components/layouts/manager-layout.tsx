@@ -6,12 +6,14 @@ import {
   SidebarContent, 
   SidebarMenu, 
   SidebarMenuItem, 
-  SidebarMenuButton 
+  SidebarMenuButton,
+  useSidebar
 } from "@/components/ui/sidebar";
 import { Header } from "@/components/ui/header";
 import { Home, Users, BarChart2, FileCheck, UserCog, Award, Library, ClipboardEdit, History, LayoutDashboard } from "lucide-react";
 
 const ManagerLayout: React.FC = () => {
+  const { setOpenMobile } = useSidebar();
   const navLinks = [
     { href: "/manager/dashboard", label: "لوحة تحكم المدير", icon: <Home /> },
     { href: "/manager/supervisor-dashboard", label: "لوحة تحكم المشرف", icon: <LayoutDashboard /> },
@@ -34,7 +36,7 @@ const ManagerLayout: React.FC = () => {
         <SidebarContent>
           <SidebarMenu>
             {navLinks.map((link) => (
-              <SidebarMenuItem key={link.href}>
+              <SidebarMenuItem key={link.href} onClick={() => setOpenMobile(false)}>
                 <NavLink to={link.href}>
                   {({ isActive }) => (
                     <SidebarMenuButton isActive={isActive}>

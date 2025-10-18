@@ -14,6 +14,7 @@ CREATE TABLE public.profiles (
 CREATE TABLE public.nurses (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   name character varying NOT NULL,
+  gender character varying NOT NULL DEFAULT 'female',
   photo_url character varying,
   is_active boolean NOT NULL DEFAULT true,
   created_at timestamp with time zone NOT NULL DEFAULT now(),

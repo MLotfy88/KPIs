@@ -79,7 +79,7 @@ const SupervisorsPage: React.FC = () => {
         <CardHeader>
           <CardTitle>قائمة المشرفين</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-auto">
           {loading ? (
             <p>جاري تحميل البيانات...</p>
           ) : (

@@ -85,7 +85,7 @@ const SupervisorDashboard = () => {
               <Button
                 onClick={() => navigate('/supervisor/evaluate', { state: { evaluationType: 'weekly' } })}
                 size="lg"
-                className="h-16 text-lg"
+                className="h-14 text-base sm:h-16 sm:text-lg"
                 variant="outline"
               >
                 <Plus className="ml-2 h-5 w-5" />
@@ -94,7 +94,7 @@ const SupervisorDashboard = () => {
               <Button
                 onClick={() => navigate('/supervisor/evaluate', { state: { evaluationType: 'monthly' } })}
                 size="lg"
-                className="h-16 text-lg"
+                className="h-14 text-base sm:h-16 sm:text-lg"
               >
                 <Plus className="ml-2 h-5 w-5" />
                 تقييم شهري جديد

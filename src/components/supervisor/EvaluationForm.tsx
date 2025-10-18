@@ -117,18 +117,18 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
   );
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl md:text-3xl font-bold">تقييم: {nurseName}</CardTitle>
-        <CardDescription className="text-base">
+    <Card className="w-full max-w-4xl mx-auto border-0 md:border md:shadow-sm">
+      <CardHeader className="text-center px-2 pt-4 md:px-6 md:pt-6">
+        <CardTitle className="text-xl md:text-2xl font-bold">تقييم: {nurseName}</CardTitle>
+        <CardDescription className="text-sm md:text-base">
           {evaluationType === 'weekly' ? 'تقييم أسبوعي' : 'تقييم شهري'} - ({completedItems} / {items.length} مكتمل)
         </CardDescription>
-        <div className="flex items-center gap-4 pt-4 w-full max-w-md mx-auto">
+        <div className="flex items-center gap-4 pt-3 w-full max-w-sm mx-auto">
           <Progress value={progress} />
-          <span className="font-bold text-primary text-lg">{Math.round(progress)}%</span>
+          <span className="font-bold text-primary text-base">{Math.round(progress)}%</span>
         </div>
       </CardHeader>
-      <CardContent className="p-4 md:p-6">
+      <CardContent className="p-2 md:p-6">
         {isMobile ? renderMobileView() : renderDesktopView()}
       </CardContent>
     </Card>

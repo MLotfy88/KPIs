@@ -44,6 +44,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -68,6 +69,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const nurseFormSchema = z.object({
   name: z.string().min(2, { message: "الاسم يجب أن يكون حرفين على الأقل." }),
+  gender: z.enum(["male", "female"], {
+    required_error: "الرجاء تحديد الجنس.",
+  }),
   photo_url: z.string().url({ message: "الرجاء إدخال رابط صحيح." }).optional().or(z.literal('')),
   is_active: z.boolean().default(true),
 });
@@ -99,6 +103,7 @@ const NursesPage: React.FC = () => {
     resolver: zodResolver(nurseFormSchema),
     defaultValues: {
       name: "",
+      gender: "female",
       photo_url: "",
       is_active: true,
     },
@@ -174,12 +179,7 @@ const NursesPage: React.FC = () => {
           description: "تم تحديث بيانات الممرض بنجاح.",
         });
       } else {
-        const nurseData = {
-          name: values.name,
-          is_active: values.is_active,
-          photo_url: values.photo_url || `https://i.pravatar.cc/150?u=${Date.now()}`,
-        };
-        await addNurse(nurseData);
+        await addNurse(values);
         toast({
           title: "نجاح",
           description: "تمت إضافة الممرض بنجاح.",
@@ -206,6 +206,7 @@ const NursesPage: React.FC = () => {
     setEditingNurse(nurse);
     form.reset({
       name: nurse.name,
+      gender: nurse.gender,
       photo_url: nurse.photo_url,
       is_active: nurse.is_active,
     });
@@ -337,6 +338,40 @@ const NursesPage: React.FC = () => {
                 />
                 <FormField
                   control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>الجنس</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-row space-x-1"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="female" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              أنثى
+                            </FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="male" />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              ذكر
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="photo_url"
                   render={({ field }) => (
                     <FormItem>
@@ -422,7 +457,9 @@ const NursesPage: React.FC = () => {
                 <TableCell>
                   <Avatar>
                     <AvatarImage src={nurse.photo_url} alt={nurse.name} loading="lazy" />
-                    <AvatarFallback>{nurse.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    <AvatarFallback>
+                      {nurse.gender === 'male' ? 'M' : 'F'}
+                    </AvatarFallback>
                   </Avatar>
                 </TableCell>
                 <TableCell>
@@ -453,12 +490,19 @@ const NursesPage: React.FC = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>إجراءات</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => handleEdit(nurse)} className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">تعديل</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleToggleActive(nurse)} className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                      <DropdownMenuItem asChild>
+                        <Link to="/manager/evaluate" state={{ evaluationType: 'weekly', nurse }}>تقييم أسبوعي</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/manager/evaluate" state={{ evaluationType: 'monthly', nurse }}>تقييم شهري</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleEdit(nurse)}>تعديل</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleToggleActive(nurse)}>
                         {nurse.is_active ? 'جعله غير نشط' : 'جعله نشط'}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-red-600 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2" onClick={() => setNurseToDelete(nurse)}>
+                      <DropdownMenuItem className="text-red-600" onClick={() => setNurseToDelete(nurse)}>
                         حذف
                       </DropdownMenuItem>
                     </DropdownMenuContent>

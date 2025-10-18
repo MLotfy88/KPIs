@@ -186,12 +186,12 @@ const NurseProfilePage: React.FC = () => {
   return (
     <div className="container mx-auto p-4 space-y-6">
       <Card>
-        <CardHeader className="flex flex-row items-center space-x-4 rtl:space-x-reverse">
+        <CardHeader className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">
           <Avatar className="h-24 w-24">
             <AvatarImage src={nurse.photo_url} alt={nurse.name} />
             <AvatarFallback>{nurse.name.charAt(0)}</AvatarFallback>
           </Avatar>
-          <div>
+          <div className="text-center sm:text-right">
             <CardTitle className="text-3xl">{nurse.name}</CardTitle>
             <p className={nurse.is_active ? "text-green-500" : "text-red-500"}>
               {nurse.is_active ? "نشط" : "غير نشط"}
@@ -250,7 +250,7 @@ const NurseProfilePage: React.FC = () => {
       )}
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
           <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
           <TabsTrigger value="analysis">تحليل الأداء</TabsTrigger>
           <TabsTrigger value="evaluations">سجل التقييمات</TabsTrigger>
@@ -338,7 +338,7 @@ const NurseProfilePage: React.FC = () => {
             <CardHeader>
               <CardTitle>سجل التقييمات</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
