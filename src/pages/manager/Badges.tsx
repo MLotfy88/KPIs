@@ -145,7 +145,7 @@ const BadgesPage: React.FC = () => {
                     <div key={tier.name} className="flex items-center gap-2 text-xs">
                       <span className={`font-bold ${badgeColors[tier.name]}`}>{tier.name}</span>
                       <span className="text-muted-foreground">
-                        ({tier.criteria.type === 'average_score' ? 'متوسط' : 'استمرارية'} >= {tier.criteria.value})
+                        ({tier.criteria.type === 'average_score' ? 'متوسط' : 'استمرارية'} {'>='} {tier.criteria.value})
                       </span>
                     </div>
                   ))}
