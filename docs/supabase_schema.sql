@@ -126,70 +126,84 @@ ALTER TABLE public.improvement_plans ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies
 -- Allow users to see their own profile
+DROP POLICY IF EXISTS "Allow users to see their own profile" ON public.profiles;
 CREATE POLICY "Allow users to see their own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
 
 -- Allow users to update their own profile
+DROP POLICY IF EXISTS "Allow users to update their own profile" ON public.profiles;
 CREATE POLICY "Allow users to update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- Allow authenticated users to see all nurses
+DROP POLICY IF EXISTS "Allow authenticated users to see all nurses" ON public.nurses;
 CREATE POLICY "Allow authenticated users to see all nurses" ON public.nurses FOR SELECT TO authenticated USING (true);
 
 -- Allow managers to add, update, and delete nurses
+DROP POLICY IF EXISTS "Allow managers to manage nurses" ON public.nurses;
 CREATE POLICY "Allow managers to manage nurses" ON public.nurses FOR ALL USING (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
 );
 
 -- Allow supervisors to see evaluations they created
+DROP POLICY IF EXISTS "Allow supervisors to see their evaluations" ON public.evaluations;
 CREATE POLICY "Allow supervisors to see their evaluations" ON public.evaluations FOR SELECT USING (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'supervisor' AND supervisor_id = auth.uid()
 );
 
 -- Allow managers to see all evaluations
+DROP POLICY IF EXISTS "Allow managers to see all evaluations" ON public.evaluations;
 CREATE POLICY "Allow managers to see all evaluations" ON public.evaluations FOR SELECT USING (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
 );
 
 -- Allow supervisors and managers to create evaluations
+DROP POLICY IF EXISTS "Allow supervisors and managers to create evaluations" ON public.evaluations;
 CREATE POLICY "Allow supervisors and managers to create evaluations" ON public.evaluations FOR INSERT WITH CHECK (
-  (public.get_user_role(auth.uid()) = 'supervisor' AND supervisor_id = auth.uid())
+  (public.get_user_role(auth.uid()) = 'supervisor' AND supervisor_id = new.supervisor_id)
   OR
   (public.get_user_role(auth.uid()) = 'manager')
 );
 
 -- Allow managers to manage all audits
+DROP POLICY IF EXISTS "Allow managers to manage audits" ON public.audits;
 CREATE POLICY "Allow managers to manage audits" ON public.audits FOR ALL USING (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
 );
 
 -- Allow authenticated users to see all badges
+DROP POLICY IF EXISTS "Allow authenticated users to see all badges" ON public.badges;
 CREATE POLICY "Allow authenticated users to see all badges" ON public.badges FOR SELECT TO authenticated USING (true);
 
 -- Allow managers to manage badges
-CREATE POLICY "Allow managers to manage badges" ON public.badges FOR ALL USING (
+DROP POLICY IF EXISTS "Allow managers to manage badges" ON public.badges FOR ALL USING (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
 );
 
 -- Allow authenticated users to see nurse badges
+DROP POLICY IF EXISTS "Allow authenticated users to see nurse badges" ON public.nurse_badges;
 CREATE POLICY "Allow authenticated users to see nurse badges" ON public.nurse_badges FOR SELECT TO authenticated USING (true);
 
 -- Allow managers to award badges
+DROP POLICY IF EXISTS "Allow managers to award badges" ON public.nurse_badges;
 CREATE POLICY "Allow managers to award badges" ON public.nurse_badges FOR INSERT WITH CHECK (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
 );
 
 -- Allow users to see their own notifications
+DROP POLICY IF EXISTS "Allow users to see their own notifications" ON public.notifications;
 CREATE POLICY "Allow users to see their own notifications" ON public.notifications FOR SELECT USING (auth.uid() = "userId");
 
 -- Allow users to update their own notifications
+DROP POLICY IF EXISTS "Allow users to update their own notifications" ON public.notifications;
 CREATE POLICY "Allow users to update their own notifications" ON public.notifications FOR UPDATE USING (auth.uid() = "userId");
 
 -- Allow managers to manage improvement plans
+DROP POLICY IF EXISTS "Allow managers to manage improvement plans" ON public.improvement_plans;
 CREATE POLICY "Allow managers to manage improvement plans" ON public.improvement_plans FOR ALL USING (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'manager'
 );
 
--- Allow supervisors to see improvement plans for nurses they supervise
--- This is a more complex policy and may need adjustment based on your exact requirements
+-- Allow supervisors to see relevant improvement plans
+DROP POLICY IF EXISTS "Allow supervisors to see relevant improvement plans" ON public.improvement_plans;
 CREATE POLICY "Allow supervisors to see relevant improvement plans" ON public.improvement_plans FOR SELECT USING (
   (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'supervisor' AND
   nurse_id IN (
