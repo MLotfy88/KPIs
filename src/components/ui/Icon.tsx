@@ -24,7 +24,7 @@ const Icon: React.FC<IconProps> = ({ name, tier, className, ...props }) => {
 
   if (!LucideIcon) {
     // @ts-ignore
-    const DefaultIcon = icons['HelpCircle'];
+    const DefaultIcon = icons['CircleHelp'];
     return <DefaultIcon className={twMerge('h-6 w-6', className)} {...props} />;
   }
 
