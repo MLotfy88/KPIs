@@ -124,15 +124,13 @@ const Evaluate = () => {
     switch (step) {
       case 'SELECT_NURSE':
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>الخطوة 1: اختيار الممرض</CardTitle>
-              <CardDescription>اختر الممرض الذي تود تقييمه.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <NurseSelector onNurseSelect={handleNurseSelect} />
-            </CardContent>
-          </Card>
+          <div className="w-full">
+            <div className="p-4 text-right">
+              <h2 className="text-xl font-bold">الخطوة 1: اختيار الممرض</h2>
+              <p className="text-muted-foreground">اختر الممرض الذي تود تقييمه.</p>
+            </div>
+            <NurseSelector onNurseSelect={handleNurseSelect} />
+          </div>
         );
       case 'SELECT_TYPE':
         return (
@@ -149,18 +147,11 @@ const Evaluate = () => {
       case 'FILL_FORM':
         if (!evaluationType || !selectedNurse) return null;
         return (
-          <Card>
-            <CardHeader dir="rtl" className="text-right pb-2">
-              <CardTitle>الخطوة 3: ملء الاستبيان</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <EvaluationForm 
-                evaluationType={evaluationType} 
-                onSubmit={handleSubmit}
-                nurseName={selectedNurse.name}
-              />
-            </CardContent>
-          </Card>
+          <EvaluationForm 
+            evaluationType={evaluationType} 
+            onSubmit={handleSubmit}
+            nurseName={selectedNurse.name}
+          />
         );
       case 'CONFIRMATION':
         return (
@@ -193,7 +184,7 @@ const Evaluate = () => {
   };
 
   return (
-    <div className="container max-w-4xl mx-auto p-0 sm:p-4">
+    <div className="w-full">
       {renderStep()}
     </div>
   );
