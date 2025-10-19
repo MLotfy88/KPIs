@@ -124,7 +124,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
         >
           {[5, 4, 3, 2, 1].map(score => (
             <div key={score} className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground flex-1 pr-4">
+              <p className="text-xs font-bold text-muted-foreground flex-1 pr-4 text-right">
                 {descriptions?.[score - 1] || `وصف الدرجة ${score}`}
               </p>
               <div className="flex items-center">
@@ -135,7 +135,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
                 />
                 <Label
                   htmlFor={`item-${item.id}-score-${score}`}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-muted bg-background text-xl font-bold ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground cursor-pointer"
+                  className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-muted-foreground bg-background text-xl font-bold ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground cursor-pointer"
                 >
                   {score}
                 </Label>
@@ -205,17 +205,17 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
 
   return (
     <div dir="rtl" className="w-full max-w-4xl mx-auto bg-card md:border md:rounded-lg md:shadow-sm flex flex-col h-screen md:h-auto">
-      <header className="text-center p-4 border-b">
+      <header className="text-right p-4 border-b">
         <h1 className="text-xl md:text-2xl font-bold">تقييم: {nurseName}</h1>
-        <p className="text-sm text-muted-foreground">
-          {evaluationType === 'weekly' ? 'تقييم أسبوعي' : 'تقييم شهري'} - ({completedItems} / {items.length} مكتمل)
-        </p>
-        <div className="flex items-center gap-4 pt-3 w-full max-w-sm mx-auto">
-          <Progress value={progress} />
+        <div className="flex items-center gap-4 pt-2 w-full max-w-sm ml-auto">
+          <span className="font-bold text-primary text-sm whitespace-nowrap">
+            {completedItems} / {items.length} مكتمل
+          </span>
+          <Progress value={progress} className="w-full" />
           <span className="font-bold text-primary text-sm">{Math.round(progress)}%</span>
         </div>
       </header>
-      <main className="flex-grow overflow-y-auto">
+      <main className="flex-grow overflow-y-auto px-2 md:px-0">
         {isMobile ? renderMobileView() : (
           <Card>
             <CardContent className="p-0">
