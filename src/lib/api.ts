@@ -43,41 +43,26 @@ type EvaluationSubmission = Omit<Evaluation, 'id' | 'created_at' | 'nurse_name'>
 };
 
 export const saveEvaluation = async (evaluationData: EvaluationSubmission): Promise<Evaluation> => {
-  const { scores, ...evaluationCore } = evaluationData;
+  // The user's database schema seems to be outdated.
+  // This is a temporary fix to align with their schema, which expects 'scores' in the 'evaluations' table.
+  // The correct, long-term solution is to update their database schema.
 
-  // Step 1: Insert the core evaluation record without scores
   const { data: newEvaluation, error: evaluationError } = await supabase
     .from('evaluations')
-    .insert(evaluationCore)
+    .insert(evaluationData) // Insert the whole object, including scores
     .select()
     .single();
 
-  if (evaluationError) throw new Error(`Failed to save evaluation: ${evaluationError.message}`);
-  if (!newEvaluation) throw new Error('Failed to get new evaluation record.');
+  if (evaluationError) {
+    // Log the detailed error to the console for debugging
+    console.error("Supabase insert error:", evaluationError);
+    throw new Error(`Failed to save evaluation: ${evaluationError.message}`);
+  }
+  if (!newEvaluation) {
+    throw new Error('Failed to get new evaluation record after insert.');
+  }
 
-  // Step 2: Fetch the IDs for the evaluation items based on their keys (from the scores object)
-  const itemKeys = Object.keys(scores);
-  const { data: items, error: itemsError } = await supabase
-    .from('evaluation_items')
-    .select('id, item_key')
-    .in('item_key', itemKeys);
-  
-  if (itemsError) throw new Error(`Failed to fetch evaluation items: ${itemsError.message}`);
-  if (!items || items.length !== itemKeys.length) throw new Error('Mismatch in evaluation items found.');
-
-  const itemIdMap = new Map(items.map(item => [item.item_key, item.id]));
-
-  // Step 3: Prepare and insert the individual scores into the evaluation_scores table
-  const scoresToInsert = itemKeys.map(key => ({
-    evaluation_id: newEvaluation.id,
-    item_id: itemIdMap.get(key),
-    score: scores[key],
-  }));
-
-  const { error: scoresError } = await supabase.from('evaluation_scores').insert(scoresToInsert);
-  if (scoresError) throw new Error(`Failed to save scores: ${scoresError.message}`);
-
-  // Step 4: Handle notifications (existing logic)
+  // The rest of the logic for notifications can proceed as before.
   const { data: nurseData, error: nurseError } = await supabase.from('nurses').select('name').eq('id', newEvaluation.nurse_id).single();
   if (nurseError) console.error('Error fetching nurse name for notification:', nurseError);
 
