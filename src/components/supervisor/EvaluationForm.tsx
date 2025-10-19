@@ -149,15 +149,27 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
 
   const renderMobileView = () => {
     if (items.length === 0) return null;
-    const currentItem = items[currentStep];
+    const isLastStep = currentStep === items.length;
+    const currentItem = isLastStep ? null : items[currentStep];
+
     return (
       <div className="flex flex-col h-full justify-between">
         <div className="overflow-y-auto">
-          {renderEvaluationItem(currentItem, currentStep)}
+          {currentItem ? renderEvaluationItem(currentItem, currentStep) : (
+            <div className="p-4 md:p-6">
+              <h3 className="text-xl font-bold mb-4">الخطوة الأخيرة: الملاحظات العامة</h3>
+              <Textarea
+                placeholder="أضف أي ملاحظات عامة حول التقييم هنا..."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={8}
+              />
+            </div>
+          )}
         </div>
         <div className="flex justify-between p-4 border-t bg-background">
-          {currentStep < items.length - 1 ? (
-            <Button onClick={() => setCurrentStep(s => s + 1)}>
+          {currentStep < items.length ? (
+            <Button onClick={() => setCurrentStep(s => s + 1)} disabled={!scores[items[currentStep]?.item_key]}>
               التالي
             </Button>
           ) : (
@@ -201,7 +213,9 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
     );
   }
 
-  const MainContent = () => isMobile ? renderMobileView() : renderDesktopView();
+  const progressSteps = items.length + 1; // +1 for notes step
+  const mobileProgress = ((currentStep + 1) / progressSteps) * 100;
+
 
   return (
     <div dir="rtl" className="w-full max-w-4xl mx-auto bg-card md:border-t md:rounded-lg md:shadow-sm flex flex-col h-screen md:h-auto">
@@ -213,21 +227,27 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
           </span>
         </h1>
         <div className="flex items-center gap-4 pt-2 w-full max-w-sm ml-auto">
-          <span className="font-bold text-primary text-sm whitespace-nowrap">
-            {completedItems} / {items.length} مكتمل
-          </span>
-          <Progress value={progress} className="w-full" />
-          <span className="font-bold text-primary text-sm">{Math.round(progress)}%</span>
+          {isMobile ? (
+            <>
+              <span className="font-bold text-primary text-sm whitespace-nowrap">
+                الخطوة {currentStep + 1} / {progressSteps}
+              </span>
+              <Progress value={mobileProgress} className="w-full" />
+              <span className="font-bold text-primary text-sm">{Math.round(mobileProgress)}%</span>
+            </>
+          ) : (
+            <>
+              <span className="font-bold text-primary text-sm whitespace-nowrap">
+                {completedItems} / {items.length} مكتمل
+              </span>
+              <Progress value={progress} className="w-full" />
+              <span className="font-bold text-primary text-sm">{Math.round(progress)}%</span>
+            </>
+          )}
         </div>
       </header>
       <main className="flex-grow overflow-y-auto px-2 md:px-0">
-        {isMobile ? renderMobileView() : (
-          <Card>
-            <CardContent className="p-0">
-              {renderDesktopView()}
-            </CardContent>
-          </Card>
-        )}
+        {isMobile ? renderMobileView() : renderDesktopView()}
       </main>
     </div>
   );
