@@ -22,7 +22,16 @@ BEGIN
             JOIN public.evaluations e ON s.evaluation_id = e.id
             WHERE e.nurse_id = nurse_id_var
               AND i.item_key = ANY(badge_record.linked_metrics)
-              AND e.created_at >= date_trunc(badge_record.period_type, NOW());
+              AND e.created_at >= date_trunc(
+                CASE badge_record.period_type
+                  WHEN 'weekly' THEN 'week'
+                  WHEN 'monthly' THEN 'month'
+                  WHEN 'quarterly' THEN 'quarter'
+                  WHEN 'all_time' THEN 'year' -- Or some very old date
+                  ELSE 'month' -- Default case
+                END,
+                NOW()
+              );
 
             -- Check against thresholds (JSONB)
             IF avg_score >= (badge_record.thresholds->>'platinum')::numeric THEN

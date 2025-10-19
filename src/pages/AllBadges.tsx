@@ -43,27 +43,30 @@ const AllBadgesPage: React.FC = () => {
       {!loading && !error && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {badges.map((badge) => (
-            <Card key={badge.id} className="flex flex-col">
+            <Card key={badge.badge_id} className="flex flex-col">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
                   <Award className="h-6 w-6 text-primary" />
-                  <span>{badge.name}</span>
+                  <span>{badge.badge_name}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex-grow">
                 <p className="text-sm text-muted-foreground mb-4">{badge.description}</p>
                 <div>
                   <h4 className="font-semibold mb-2">المستويات والمعايير</h4>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    النوع: {badge.criteria_type} | الفترة: {badge.period_type}
+                  </p>
                   <ul className="space-y-2 text-xs">
-                    {badge.tiers.map(tier => (
-                      <li key={tier.name} className="flex justify-between items-center p-2 rounded-md bg-gray-50 dark:bg-gray-800">
+                    {Object.entries(badge.thresholds).map(([tier, value]) => (
+                      <li key={tier} className="flex justify-between items-center p-2 rounded-md bg-gray-50 dark:bg-gray-800">
                         <span className={`capitalize font-semibold ${
-                          tier.name === 'gold' ? 'text-yellow-500' :
-                          tier.name === 'silver' ? 'text-gray-400' :
-                          tier.name === 'bronze' ? 'text-yellow-700' :
+                          tier === 'gold' ? 'text-yellow-500' :
+                          tier === 'silver' ? 'text-gray-400' :
+                          tier === 'bronze' ? 'text-yellow-700' :
                           'text-gray-500'
-                        }`}>{tier.name}</span>
-                        <span className="font-mono text-right">{`الحصول على ${tier.criteria.value}% في متوسط الأداء`}</span>
+                        }`}>{tier}</span>
+                        <span className="font-mono text-right">{`يتطلب متوسط ${value} أو أعلى`}</span>
                       </li>
                     ))}
                   </ul>

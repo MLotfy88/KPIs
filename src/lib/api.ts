@@ -390,6 +390,7 @@ export interface LeaderboardEntry {
   nurse_id: string;
   nurse_name: string;
   nurse_photo_url?: string;
+  nurse_gender: 'male' | 'female';
   week1_score: number | null;
   week2_score: number | null;
   week3_score: number | null;

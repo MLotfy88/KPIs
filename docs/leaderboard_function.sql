@@ -3,6 +3,7 @@ RETURNS TABLE (
     nurse_id uuid,
     nurse_name character varying,
     nurse_photo_url character varying,
+    nurse_gender character varying,
     week1_score numeric,
     week2_score numeric,
     week3_score numeric,
@@ -40,6 +41,7 @@ BEGIN
             n.id AS nurse_id,
             n.name AS nurse_name,
             n.photo_url AS nurse_photo_url,
+            n.gender AS nurse_gender,
             -- Current month scores
             MAX(CASE WHEN cms.week_of_month = 1 THEN cms.weekly_avg ELSE NULL END) AS week1_score,
             MAX(CASE WHEN cms.week_of_month = 2 THEN cms.weekly_avg ELSE NULL END) AS week2_score,
@@ -53,12 +55,12 @@ BEGIN
         FROM public.nurses n
         LEFT JOIN current_month_scores cms ON n.id = cms.nurse_id
         LEFT JOIN previous_month_scores pms ON n.id = pms.nurse_id
-        GROUP BY n.id, n.name, n.photo_url
+        GROUP BY n.id, n.name, n.photo_url, n.gender
     ),
     nurse_badges_agg AS (
         SELECT
             nb.nurse_id,
-            jsonb_agg(jsonb_build_object('name', b.badge_name, 'icon', b.badge_icon, 'tier', nb.tier)) AS badges
+            jsonb_agg(jsonb_build_object('badge_name', b.badge_name, 'badge_icon', b.badge_icon, 'tier', nb.tier)) AS badges
         FROM public.nurse_badges nb
         JOIN public.badges b ON nb.badge_id = b.badge_id
         WHERE nb.awarded_at >= date_trunc('month', NOW())
@@ -68,6 +70,7 @@ BEGIN
         ags.nurse_id,
         ags.nurse_name,
         ags.nurse_photo_url,
+        ags.nurse_gender,
         ags.week1_score,
         ags.week2_score,
         ags.week3_score,
