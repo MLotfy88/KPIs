@@ -5,7 +5,7 @@ const predefinedBadges: Omit<Badge, 'badge_id' | 'created_at' | 'updated_at'>[] 
   {
     badge_name: 'بطل مكافحة العدوى',
     description: 'يُمنح للتميز المستمر في تطبيق معايير مكافحة العدوى.',
-    icon: 'Shield',
+    badge_icon: 'Shield',
     tiers: [
       { name: 'bronze', criteria: { type: 'specific_score', value: 4, operator: 'gte', evaluation_type: 'monthly' } },
       { name: 'silver', criteria: { type: 'specific_score', value: 5, operator: 'gte', evaluation_type: 'monthly' } },
@@ -15,7 +15,7 @@ const predefinedBadges: Omit<Badge, 'badge_id' | 'created_at' | 'updated_at'>[] 
   {
     badge_name: 'نجم التوثيق',
     description: 'يُمنح للدقة الاستثنائية والالتزام الكامل بالتوثيق الصحيح.',
-    icon: 'Star',
+    badge_icon: 'Star',
     tiers: [
       { name: 'bronze', criteria: { type: 'average_score', value: 85, operator: 'gte', evaluation_type: 'monthly' } },
       { name: 'gold', criteria: { type: 'average_score', value: 95, operator: 'gte', evaluation_type: 'monthly' } },
@@ -24,7 +24,7 @@ const predefinedBadges: Omit<Badge, 'badge_id' | 'created_at' | 'updated_at'>[] 
   {
     badge_name: 'روح المبادرة',
     description: 'يُمنح للممرضين الذين يظهرون مبادرة استباقية في مساعدة الفريق وتقديم الاقتراحات.',
-    icon: 'Zap',
+    badge_icon: 'Zap',
     tiers: [
       { name: 'silver', criteria: { type: 'consistency', value: 4, operator: 'gte' } }, // 4 weeks in a row with high initiative scores
     ],
@@ -32,7 +32,7 @@ const predefinedBadges: Omit<Badge, 'badge_id' | 'created_at' | 'updated_at'>[] 
   {
     badge_name: 'قدوة الالتزام',
     description: 'يُمنح للالتزام التام بالمواعيد، الزي الرسمي، والسلوك المهني.',
-    icon: 'Award',
+    badge_icon: 'Award',
     tiers: [
       { name: 'gold', criteria: { type: 'average_score', value: 98, operator: 'gte', evaluation_type: 'monthly' } },
     ],
