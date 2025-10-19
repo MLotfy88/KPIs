@@ -153,8 +153,8 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
     const currentItem = isLastStep ? null : items[currentStep];
 
     return (
-      <div className="flex flex-col h-full justify-between">
-        <div className="overflow-y-auto">
+      <>
+        <div className="pb-20"> 
           {currentItem ? renderEvaluationItem(currentItem, currentStep) : (
             <div className="p-4 md:p-6">
               <h3 className="text-xl font-bold mb-4">الخطوة الأخيرة: الملاحظات العامة</h3>
@@ -167,7 +167,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
             </div>
           )}
         </div>
-        <div className="flex justify-between p-4 border-t bg-background">
+        <div className="fixed bottom-0 left-0 right-0 w-full max-w-4xl mx-auto flex justify-between p-4 border-t bg-background">
           {currentStep < items.length ? (
             <Button onClick={() => setCurrentStep(s => s + 1)} disabled={!scores[items[currentStep]?.item_key]}>
               التالي
@@ -181,7 +181,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
             السابق
           </Button>
         </div>
-      </div>
+      </>
     );
   };
 
