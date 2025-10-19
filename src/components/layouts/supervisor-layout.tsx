@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { 
   Sidebar, 
   SidebarHeader, 
@@ -14,6 +14,8 @@ import { Home, Edit, List, Library } from "lucide-react";
 
 const SupervisorLayout: React.FC = () => {
   const { setOpenMobile } = useSidebar();
+  const location = useLocation();
+  const isEvaluatePage = location.pathname.includes("/evaluate");
   const navLinks = [
     { href: "/supervisor/dashboard", label: "لوحة التحكم", icon: <Home /> },
     { href: "/supervisor/evaluate", label: "تقييم جديد", icon: <Edit /> },
@@ -46,8 +48,8 @@ const SupervisorLayout: React.FC = () => {
       </Sidebar>
       <div className="flex-1 flex flex-col">
         <Header />
-        <main className="flex-1 p-4 sm:p-6 md:p-8">
-          <div className="max-w-7xl mx-auto">
+        <main className={isEvaluatePage ? "flex-1" : "flex-1 p-4 sm:p-6 md:p-8"}>
+          <div className={isEvaluatePage ? "" : "max-w-7xl mx-auto"}>
             <Outlet />
           </div>
         </main>
