@@ -1,42 +1,64 @@
 import { supabase } from './supabase';
 import { Badge } from '@/types';
 
+// This new structure matches the 'Badge' type in src/types/index.ts
+// and the schema in docs/supabase_schema.sql
 const predefinedBadges: Omit<Badge, 'badge_id' | 'created_at' | 'updated_at'>[] = [
   {
     badge_name: 'بطل مكافحة العدوى',
     description: 'يُمنح للتميز المستمر في تطبيق معايير مكافحة العدوى.',
     badge_icon: 'Shield',
-    tiers: [
-      { name: 'bronze', criteria: { type: 'specific_score', value: 4, operator: 'gte', evaluation_type: 'monthly' } },
-      { name: 'silver', criteria: { type: 'specific_score', value: 5, operator: 'gte', evaluation_type: 'monthly' } },
-      { name: 'gold', criteria: { type: 'consistency', value: 3, operator: 'gte', evaluation_type: 'monthly' } }, // 3 months in a row with score 5
-    ],
+    linked_metrics: ['infection_control', 'sterile_field_maintenance', 'equipment_cleaning'],
+    criteria_type: 'average',
+    thresholds: { "bronze": 4.0, "silver": 4.5, "gold": 4.8 },
+    period_type: 'monthly',
+    active: true,
+    editable: true,
   },
   {
     badge_name: 'نجم التوثيق',
     description: 'يُمنح للدقة الاستثنائية والالتزام الكامل بالتوثيق الصحيح.',
     badge_icon: 'Star',
-    tiers: [
-      { name: 'bronze', criteria: { type: 'average_score', value: 85, operator: 'gte', evaluation_type: 'monthly' } },
-      { name: 'gold', criteria: { type: 'average_score', value: 95, operator: 'gte', evaluation_type: 'monthly' } },
-    ],
+    linked_metrics: ['charting_documentation_accuracy', 'handover_reporting'],
+    criteria_type: 'average',
+    thresholds: { "silver": 4.5, "gold": 5.0 },
+    period_type: 'monthly',
+    active: true,
+    editable: true,
   },
   {
     badge_name: 'روح المبادرة',
     description: 'يُمنح للممرضين الذين يظهرون مبادرة استباقية في مساعدة الفريق وتقديم الاقتراحات.',
     badge_icon: 'Zap',
-    tiers: [
-      { name: 'silver', criteria: { type: 'consistency', value: 4, operator: 'gte' } }, // 4 weeks in a row with high initiative scores
-    ],
+    linked_metrics: ['initiative_helping', 'improvement_suggestions'],
+    criteria_type: 'average',
+    thresholds: { "silver": 4.0, "gold": 4.5 },
+    period_type: 'monthly',
+    active: true,
+    editable: true,
   },
   {
     badge_name: 'قدوة الالتزام',
     description: 'يُمنح للالتزام التام بالمواعيد، الزي الرسمي، والسلوك المهني.',
     badge_icon: 'Award',
-    tiers: [
-      { name: 'gold', criteria: { type: 'average_score', value: 98, operator: 'gte', evaluation_type: 'monthly' } },
-    ],
+    linked_metrics: ['attendance_punctuality', 'uniform_appearance', 'respect_admin_instructions'],
+    criteria_type: 'average',
+    thresholds: { "gold": 4.8 },
+    period_type: 'monthly',
+    active: true,
+    editable: true,
   },
+  {
+    badge_name: 'خبير رعاية المريض',
+    description: 'يُمنح للتميز في التواصل مع المرضى وتلبية احتياجاتهم.',
+    badge_icon: 'Heart',
+    linked_metrics: ['patient_welcoming', 'procedure_explanation', 'patient_request_response'],
+    criteria_type: 'average',
+    thresholds: { "bronze": 4.0, "silver": 4.5, "gold": 4.8 },
+    period_type: 'monthly',
+    active: true,
+    editable: true,
+  }
 ];
 
 export const seedBadges = async () => {
@@ -49,6 +71,7 @@ export const seedBadges = async () => {
     const badgesToInsert = predefinedBadges.filter(b => !existingBadgeNames.includes(b.badge_name));
 
     if (badgesToInsert.length > 0) {
+      // The object structure now matches the database schema, so this should succeed.
       const { error: insertError } = await supabase.from('badges').insert(badgesToInsert);
       if (insertError) throw insertError;
       console.log('Predefined badges have been seeded successfully.');
@@ -56,6 +79,7 @@ export const seedBadges = async () => {
       console.log('Predefined badges already exist. No seeding needed.');
     }
   } catch (error) {
+    // This will now provide a more accurate error if the schema is still mismatched.
     console.error('Error seeding badges:', error);
   }
 };
