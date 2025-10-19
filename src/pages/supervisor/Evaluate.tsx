@@ -150,13 +150,10 @@ const Evaluate = () => {
         if (!evaluationType || !selectedNurse) return null;
         return (
           <Card>
-            <CardHeader>
+            <CardHeader dir="rtl" className="text-right pb-2">
               <CardTitle>الخطوة 3: ملء الاستبيان</CardTitle>
-              <CardDescription>
-                تقييم {evaluationType === 'weekly' ? 'أسبوعي' : 'شهري'} للممرض: {selectedNurse?.name}
-              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <EvaluationForm 
                 evaluationType={evaluationType} 
                 onSubmit={handleSubmit}
@@ -196,7 +193,7 @@ const Evaluate = () => {
   };
 
   return (
-    <div className="container max-w-4xl mx-auto p-2 sm:p-4">
+    <div className="container max-w-4xl mx-auto p-0 sm:p-4">
       {renderStep()}
     </div>
   );

@@ -115,8 +115,8 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
       : weeklyDescriptions[item.item_key];
 
     return (
-      <div key={item.id} className="w-full bg-background p-4 border-b">
-        <p className="font-bold mb-4 text-lg">{index + 1}. {item.question}</p>
+      <div key={item.id} className="w-full bg-background py-4 px-2 sm:px-4 border-b">
+        <p className="font-bold mb-4 text-base">{index + 1}. {item.question}</p>
         <RadioGroup
           value={scores[item.item_key]?.toString() || ''}
           onValueChange={(value) => handleScoreChange(item.item_key, parseInt(value, 10))}
@@ -124,7 +124,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
         >
           {[5, 4, 3, 2, 1].map(score => (
             <div key={score} className="flex items-center justify-between">
-              <p className="text-xs font-bold text-muted-foreground flex-1 pr-4 text-right">
+              <p className="text-xs font-bold text-muted-foreground flex-1 pr-2 text-right">
                 {descriptions?.[score - 1] || `وصف الدرجة ${score}`}
               </p>
               <div className="flex items-center">
@@ -135,7 +135,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
                 />
                 <Label
                   htmlFor={`item-${item.id}-score-${score}`}
-                  className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-muted-foreground bg-background text-xl font-bold ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground cursor-pointer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-muted-foreground bg-background text-xl font-bold ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground cursor-pointer"
                 >
                   {score}
                 </Label>
@@ -151,14 +151,11 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
     if (items.length === 0) return null;
     const currentItem = items[currentStep];
     return (
-      <div className="flex flex-col h-full">
-        <div className="flex-grow overflow-y-auto">
+      <div className="flex flex-col h-full justify-between">
+        <div className="overflow-y-auto">
           {renderEvaluationItem(currentItem, currentStep)}
         </div>
         <div className="flex justify-between p-4 border-t bg-background">
-          <Button onClick={() => setCurrentStep(s => s - 1)} disabled={currentStep === 0} variant="outline">
-            السابق
-          </Button>
           {currentStep < items.length - 1 ? (
             <Button onClick={() => setCurrentStep(s => s + 1)}>
               التالي
@@ -168,6 +165,9 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
               إرسال التقييم
             </Button>
           )}
+          <Button onClick={() => setCurrentStep(s => s - 1)} disabled={currentStep === 0} variant="outline">
+            السابق
+          </Button>
         </div>
       </div>
     );
@@ -204,9 +204,14 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
   const MainContent = () => isMobile ? renderMobileView() : renderDesktopView();
 
   return (
-    <div dir="rtl" className="w-full max-w-4xl mx-auto bg-card md:border md:rounded-lg md:shadow-sm flex flex-col h-screen md:h-auto">
+    <div dir="rtl" className="w-full max-w-4xl mx-auto bg-card md:border-t md:rounded-lg md:shadow-sm flex flex-col h-screen md:h-auto">
       <header className="text-right p-4 border-b">
-        <h1 className="text-xl md:text-2xl font-bold">تقييم: {nurseName}</h1>
+        <h1 className="text-xl md:text-2xl font-bold">
+          تقييم: {nurseName}
+          <span className="text-lg text-muted-foreground font-medium mr-2">
+            ({evaluationType === 'weekly' ? 'أسبوعي' : 'شهري'})
+          </span>
+        </h1>
         <div className="flex items-center gap-4 pt-2 w-full max-w-sm ml-auto">
           <span className="font-bold text-primary text-sm whitespace-nowrap">
             {completedItems} / {items.length} مكتمل

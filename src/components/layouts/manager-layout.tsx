@@ -14,6 +14,9 @@ import { Home, Users, BarChart2, FileCheck, UserCog, Award, Library, ClipboardEd
 
 const ManagerLayout: React.FC = () => {
   const { setOpenMobile } = useSidebar();
+  
+  const leaderboardLink = { href: "/manager/leaderboard", label: "لوحة الدرجات", icon: <BarChart2 /> };
+  
   const navLinks = [
     { href: "/manager/dashboard", label: "لوحة تحكم المدير", icon: <Home /> },
     { href: "/manager/evaluate", label: "إجراء تقييم", icon: <ClipboardEdit /> },
@@ -22,7 +25,6 @@ const ManagerLayout: React.FC = () => {
     { href: "/manager/supervisors", label: "إدارة المشرفين", icon: <UserCog /> },
     { href: "/manager/audits", label: "المراجعات العشوائية", icon: <FileCheck /> },
     { href: "/manager/reports", label: "التقارير", icon: <BarChart2 /> },
-    { href: "/manager/leaderboard", label: "لوحة الدرجات", icon: <BarChart2 /> },
     { href: "/manager/badges", label: "إدارة الشارات", icon: <Award /> },
     { href: "/all-badges", label: "مكتبة الشارات", icon: <Library /> },
   ];
@@ -31,10 +33,24 @@ const ManagerLayout: React.FC = () => {
     <div className="flex min-h-screen">
       <Sidebar>
         <SidebarHeader>
-          <h1 className="text-2xl font-bold text-center">أداء</h1>
+          <h1 className="text-2xl font-bold text-center">Nursing KPIs</h1>
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
+            <SidebarMenuItem onClick={() => setOpenMobile(false)}>
+              <NavLink to={leaderboardLink.href}>
+                {({ isActive }) => (
+                  <SidebarMenuButton 
+                    isActive={isActive} 
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground data-[active=true]:bg-primary/90 data-[active=true]:text-primary-foreground"
+                  >
+                    {leaderboardLink.icon}
+                    <span>{leaderboardLink.label}</span>
+                  </SidebarMenuButton>
+                )}
+              </NavLink>
+            </SidebarMenuItem>
+
             {navLinks.map((link) => (
               <SidebarMenuItem key={link.href} onClick={() => setOpenMobile(false)}>
                 <NavLink to={link.href}>
