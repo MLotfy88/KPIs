@@ -27,12 +27,15 @@ export const getActiveNurses = async (): Promise<Nurse[]> => {
   return data;
 };
 
-export const getEvaluationItems = async (evaluationType: 'weekly' | 'monthly'): Promise<EvaluationItem[]> => {
-  const { data, error } = await supabase
-    .from('evaluation_items')
-    .select('*')
-    .contains('evaluation_types', [evaluationType]);
+export const getEvaluationItems = async (evaluationType?: 'weekly' | 'monthly'): Promise<EvaluationItem[]> => {
+  let query = supabase.from('evaluation_items').select('*');
+
+  if (evaluationType) {
+    query = query.contains('evaluation_types', [evaluationType]);
+  }
   
+  const { data, error } = await query;
+
   if (error) throw new Error(error.message);
   return data;
 };
@@ -273,12 +276,6 @@ export const updateUser = async (userId: string, userData: Partial<Omit<User, 'i
 
 export const getBadges = async (): Promise<Badge[]> => {
   const { data, error } = await supabase.from('badges').select('*');
-  if (error) throw new Error(error.message);
-  return data;
-};
-
-export const getEvaluationItems = async (): Promise<EvaluationItem[]> => {
-  const { data, error } = await supabase.from('evaluation_items').select('*');
   if (error) throw new Error(error.message);
   return data;
 };
