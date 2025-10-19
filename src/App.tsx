@@ -26,6 +26,7 @@ const LeaderboardPage = lazy(() => import("./pages/manager/Leaderboard"));
 const AllBadgesPage = lazy(() => import("./pages/AllBadges"));
 const Evaluate = lazy(() => import("./pages/supervisor/Evaluate"));
 const SupervisorHistory = lazy(() => import("./pages/supervisor/History"));
+const EvaluationItemsPage = lazy(() => import("./pages/manager/EvaluationItems"));
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const ProtectedRoutesWithSidebar = () => (
           <Route path="/manager/reports" element={<ReportsPage />} />
           <Route path="/manager/badges" element={<BadgesPage />} />
           <Route path="/manager/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/manager/evaluation-items" element={<EvaluationItemsPage />} />
           <Route path="/all-badges" element={<AllBadgesPage />} />
           <Route path="/manager/evaluate" element={<Evaluate />} />
           <Route path="/manager/history" element={<SupervisorHistory />} />

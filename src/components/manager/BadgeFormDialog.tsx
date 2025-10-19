@@ -1,91 +1,137 @@
 import { useState, useEffect } from 'react';
-import { Badge, BadgeTier, BadgeIcon, BadgeColor } from '@/types';
+import { Badge, BadgeIcon, EvaluationItem } from '@/types';
+import { getEvaluationItems } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Award, Star, Zap, Shield, TrendingUp, Trash2 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
+import Icon from '@/components/ui/Icon';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const icons: Record<BadgeIcon, React.ReactNode> = {
-  Award: <Award className="h-5 w-5" />,
-  Star: <Star className="h-5 w-5" />,
-  Zap: <Zap className="h-5 w-5" />,
-  Shield: <Shield className="h-5 w-5" />,
-  TrendingUp: <TrendingUp className="h-5 w-5" />,
-};
+const icons: BadgeIcon[] = [
+  'Award', 'Star', 'Zap', 'Shield', 'TrendingUp', 'Anchor', 'Aperture', 'Bike', 'BookOpen', 'Briefcase',
+  'Camera', 'CheckCircle', 'Clipboard', 'Cloud', 'Code', 'Compass', 'Cpu', 'CreditCard', 'Database', 'Disc',
+  'Feather', 'Figma', 'FileText', 'Film', 'Flag', 'Gift', 'GitBranch', 'Globe', 'Heart', 'Home',
+  'Image', 'Key', 'Layers', 'LifeBuoy', 'Link', 'Lock', 'MapPin', 'Maximize', 'Mic', 'Moon',
+  'MousePointer', 'Music', 'Package', 'PenTool', 'Phone', 'PieChart', 'Power', 'Radio', 'Save', 'Settings',
+  'Share2', 'ShoppingBag', 'Smile', 'Speaker', 'Sun', 'Tag', 'Target', 'Terminal', 'ThumbsUp', 'Tool',
+  'Trello', 'Truck', 'Umbrella', 'Video', 'Watch', 'Wifi', 'Wind', 'Youtube'
+];
 
-const badgeColors: Record<BadgeColor, string> = {
-  bronze: 'text-[#cd7f32]',
-  silver: 'text-[#c0c0c0]',
-  gold: 'text-[#ffd700]',
-  platinum: 'text-[#e5e4e2]',
-};
+const tierNames = ['bronze', 'silver', 'gold', 'platinum'];
 
 interface BadgeFormDialogProps {
   isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  onSave: (badge: Partial<Badge>) => void;
-  badge: Partial<Badge> | null;
-  isSaving: boolean;
+  onClose: () => void;
+  onSave: (badgeData: Omit<Badge, 'badge_id' | 'created_at' | 'updated_at'>) => void;
+  badge: Badge | null;
 }
 
-const BadgeFormDialog = ({ isOpen, onOpenChange, onSave, badge, isSaving }: BadgeFormDialogProps) => {
-  const [formData, setFormData] = useState<Partial<Badge>>({});
+const BadgeFormDialog = ({ isOpen, onClose, onSave, badge }: BadgeFormDialogProps) => {
+  const [evaluationItems, setEvaluationItems] = useState<EvaluationItem[]>([]);
+  const [formData, setFormData] = useState<Omit<Badge, 'badge_id' | 'created_at' | 'updated_at'>>({
+    badge_name: '',
+    description: '',
+    badge_icon: 'Award',
+    criteria_type: 'average_score',
+    period_type: 'monthly',
+    active: true,
+    thresholds: { bronze: 0, silver: 0, gold: 0, platinum: 0 },
+  });
   const { toast } = useToast();
 
   useEffect(() => {
-    setFormData(badge || {});
-  }, [badge]);
-
-  const handleTierChange = (index: number, field: keyof BadgeTier, value: any) => {
-    const newTiers = [...(formData.tiers || [])];
-    // @ts-ignore
-    newTiers[index][field] = value;
-    setFormData({ ...formData, tiers: newTiers });
-  };
-  
-  const handleCriteriaChange = (index: number, field: keyof BadgeTier['criteria'], value: any) => {
-    const newTiers = [...(formData.tiers || [])];
-    newTiers[index].criteria[field] = value;
-    setFormData({ ...formData, tiers: newTiers });
-  };
-
-  const addTier = () => {
-    const newTier: BadgeTier = {
-      name: 'bronze',
-      criteria: { type: 'average_score', value: 70, operator: 'gte' },
+    const fetchItems = async () => {
+      try {
+        const items = await getEvaluationItems();
+        setEvaluationItems(items);
+      } catch (error) {
+        console.error("Failed to fetch evaluation items", error);
+        toast({ title: "Failed to load evaluation items", variant: "destructive" });
+      }
     };
-    setFormData({ ...formData, tiers: [...(formData.tiers || []), newTier] });
-  };
+    fetchItems();
+  }, []);
 
-  const removeTier = (index: number) => {
-    const newTiers = [...(formData.tiers || [])];
-    newTiers.splice(index, 1);
-    setFormData({ ...formData, tiers: newTiers });
+  useEffect(() => {
+    if (badge) {
+      setFormData({
+        badge_name: badge.badge_name,
+        description: badge.description,
+        badge_icon: badge.badge_icon,
+        criteria_type: badge.criteria_type,
+        period_type: badge.period_type,
+        active: badge.active,
+        thresholds: {
+          bronze: badge.thresholds?.bronze ?? 0,
+          silver: badge.thresholds?.silver ?? 0,
+          gold: badge.thresholds?.gold ?? 0,
+          platinum: badge.thresholds?.platinum ?? 0,
+        },
+        linked_metrics: badge.linked_metrics || [],
+      });
+    } else {
+      // Reset for new badge
+      setFormData({
+        badge_name: '',
+        description: '',
+        badge_icon: 'Award',
+        criteria_type: 'average_score',
+        period_type: 'monthly',
+        active: true,
+        thresholds: { bronze: 0, silver: 0, gold: 0, platinum: 0 },
+        linked_metrics: [],
+      });
+    }
+  }, [badge, isOpen]);
+
+  const handleThresholdChange = (tier: string, value: string) => {
+    const numValue = parseInt(value, 10);
+    if (!isNaN(numValue)) {
+      setFormData(prev => ({
+        ...prev,
+        thresholds: {
+          ...prev.thresholds,
+          [tier]: numValue,
+        },
+      }));
+    }
   };
 
   const handleSubmit = () => {
-    if (!formData.name || !formData.description || !formData.icon || !formData.tiers || formData.tiers.length === 0) {
-      toast({ title: 'خطأ', description: 'الرجاء ملء جميع الحقول الأساسية وإضافة مستوى واحد على الأقل.', variant: 'destructive' });
+    // Basic validation
+    if (!formData.badge_name || !formData.description) {
+       toast({ title: 'خطأ', description: 'الرجاء ملء اسم الشارة ووصفها.', variant: 'destructive' });
       return;
     }
     onSave(formData);
   };
 
+  const handleMetricToggle = (metricKey: string) => {
+    setFormData(prev => {
+      const newMetrics = prev.linked_metrics?.includes(metricKey)
+        ? prev.linked_metrics.filter(m => m !== metricKey)
+        : [...(prev.linked_metrics || []), metricKey];
+      return { ...prev, linked_metrics: newMetrics };
+    });
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{formData.id ? 'تعديل الشارة' : 'شارة جديدة'}</DialogTitle>
+          <DialogTitle>{badge ? 'تعديل الشارة' : 'شارة جديدة'}</DialogTitle>
           <DialogDescription>أدخل تفاصيل الشارة والمعايير المطلوبة للحصول عليها.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
           <div>
             <Label htmlFor="name">اسم الشارة</Label>
-            <Input id="name" value={formData.name || ''} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+            <Input id="name" value={formData.badge_name || ''} onChange={(e) => setFormData({ ...formData, badge_name: e.target.value })} />
           </div>
           <div>
             <Label htmlFor="description">الوصف</Label>
@@ -93,71 +139,108 @@ const BadgeFormDialog = ({ isOpen, onOpenChange, onSave, badge, isSaving }: Badg
           </div>
           <div>
             <Label>الأيقونة</Label>
-            <div className="flex gap-2 flex-wrap p-2 border rounded-md">
-              {Object.keys(icons).map((iconKey) => (
-                <Button
-                  key={iconKey}
-                  variant={formData.icon === iconKey ? 'default' : 'outline'}
-                  size="icon"
-                  onClick={() => setFormData({ ...formData, icon: iconKey as BadgeIcon })}
-                >
-                  {icons[iconKey as BadgeIcon]}
-                </Button>
+            <Select value={formData.badge_icon} onValueChange={(value) => setFormData({ ...formData, badge_icon: value as BadgeIcon })}>
+              <SelectTrigger>
+                <SelectValue placeholder="اختر أيقونة..." />
+              </SelectTrigger>
+              <SelectContent className="max-h-[200px]">
+                {icons.map((iconName) => (
+                  <SelectItem key={iconName} value={iconName}>
+                    <div className="flex items-center gap-2">
+                      <Icon name={iconName} />
+                      <span>{iconName}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>نوع المعيار</Label>
+              <Select value={formData.criteria_type} onValueChange={(value) => setFormData({ ...formData, criteria_type: value })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="average_score">متوسط النقاط</SelectItem>
+                  <SelectItem value="total_evaluations">عدد التقييمات</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>الفترة</Label>
+              <Select value={formData.period_type} onValueChange={(value) => setFormData({ ...formData, period_type: value })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="weekly">أسبوعي</SelectItem>
+                  <SelectItem value="monthly">شهري</SelectItem>
+                  <SelectItem value="quarterly">ربع سنوي</SelectItem>
+                  <SelectItem value="yearly">سنوي</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-2">المستويات (الدرجة المطلوبة)</h4>
+            <div className="grid grid-cols-2 gap-4">
+              {tierNames.map(tier => (
+                <div key={tier}>
+                  <Label htmlFor={`threshold-${tier}`} className="capitalize">{tier}</Label>
+                  <Input
+                    id={`threshold-${tier}`}
+                    type="number"
+                    value={formData.thresholds?.[tier as keyof typeof formData.thresholds] || 0}
+                    onChange={(e) => handleThresholdChange(tier, e.target.value)}
+                  />
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h4 className="font-semibold">مستويات الشارة</h4>
-            {formData.tiers?.map((tier, index) => (
-              <div key={index} className="p-4 border rounded-md space-y-3 bg-muted/50">
-                <div className="flex justify-between items-center">
-                  <h5 className="font-semibold">المستوى {index + 1}</h5>
-                  <Button variant="ghost" size="icon" onClick={() => removeTier(index)}>
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>اللون</Label>
-                    <Select value={tier.name} onValueChange={(value) => handleTierChange(index, 'name', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="اختر اللون..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.keys(badgeColors).map(color => (
-                          <SelectItem key={color} value={color}>{color}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>نوع المعيار</Label>
-                    <Select value={tier.criteria.type} onValueChange={(value) => handleCriteriaChange(index, 'type', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="اختر النوع..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="average_score">متوسط النقاط</SelectItem>
-                        <SelectItem value="consistency">الاستمرارية</SelectItem>
-                        <SelectItem value="specific_score">نقاط محددة</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>القيمة</Label>
-                    <Input type="number" value={tier.criteria.value} onChange={(e) => handleCriteriaChange(index, 'value', parseInt(e.target.value))} />
-                  </div>
-                </div>
-              </div>
-            ))}
-            <Button variant="outline" onClick={addTier}>إضافة مستوى</Button>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="active-mode"
+              checked={formData.active}
+              onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
+            />
+            <Label htmlFor="active-mode">شارة نشطة</Label>
+          </div>
+
+          <div>
+            <Label>بنود التقييم المرتبطة</Label>
+            <Command className="rounded-lg border shadow-md">
+              <CommandInput placeholder="ابحث عن بند..." />
+              <CommandList className="max-h-[150px]">
+                <CommandEmpty>لم يتم العثور على بنود.</CommandEmpty>
+                <CommandGroup>
+                  {evaluationItems.map((item) => (
+                    <CommandItem
+                      key={item.id}
+                      onSelect={() => handleMetricToggle(item.item_key)}
+                      className="cursor-pointer"
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          formData.linked_metrics?.includes(item.item_key)
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {item.question}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+            <p className="text-xs text-muted-foreground mt-1">
+              سيتم حساب متوسط النقاط لهذه البنود فقط لمنح الشارة.
+            </p>
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={handleSubmit} disabled={isSaving}>
-            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'حفظ'}
-          </Button>
+          <Button onClick={handleSubmit}>حفظ</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

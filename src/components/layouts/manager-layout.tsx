@@ -26,6 +26,7 @@ const ManagerLayout: React.FC = () => {
     { href: "/manager/audits", label: "المراجعات العشوائية", icon: <FileCheck /> },
     { href: "/manager/reports", label: "التقارير", icon: <BarChart2 /> },
     { href: "/manager/badges", label: "إدارة الشارات", icon: <Award /> },
+    { href: "/manager/evaluation-items", label: "بنود التقييم", icon: <ClipboardEdit /> },
     { href: "/all-badges", label: "مكتبة الشارات", icon: <Library /> },
   ];
 

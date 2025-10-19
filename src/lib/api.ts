@@ -277,6 +277,27 @@ export const getBadges = async (): Promise<Badge[]> => {
   return data;
 };
 
+export const getEvaluationItems = async (): Promise<EvaluationItem[]> => {
+  const { data, error } = await supabase.from('evaluation_items').select('*');
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+export const saveEvaluationItem = async (itemData: Partial<EvaluationItem>): Promise<EvaluationItem> => {
+  const { data, error } = await supabase
+    .from('evaluation_items')
+    .upsert({ ...itemData, updated_at: new Date().toISOString() })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+export const deleteEvaluationItem = async (itemId: string): Promise<void> => {
+  const { error } = await supabase.from('evaluation_items').delete().eq('id', itemId);
+  if (error) throw new Error(error.message);
+};
+
 export const saveBadge = async (badgeData: Partial<Badge>): Promise<Badge> => {
   // Supabase upsert will insert a new row if badge_id is not provided or doesn't exist,
   // and update it if it does.

@@ -81,11 +81,11 @@ const AllBadgesPage: React.FC = () => {
                     </p>
                     <ul className="space-y-2 text-xs">
                       {sortedTiers.map(([tier, value]) => (
-                        <li key={tier} className="flex justify-between items-center p-2 rounded-md bg-black/5 dark:bg-white/5">
-                          <span className={cn("font-semibold", tierDisplay[tier]?.color || 'text-foreground')}>
+                        <li key={tier} className="flex justify-between items-center p-2 rounded-md bg-white/80 dark:bg-black/50 text-slate-800 dark:text-slate-200">
+                          <span className={cn("font-bold", tierDisplay[tier]?.color || 'text-foreground')}>
                             {tierDisplay[tier]?.name || tier}
                           </span>
-                          <span className="font-mono">{`يتطلب متوسط ${value} أو أعلى`}</span>
+                          <span className="font-mono text-sm">{`يتطلب متوسط ${value} أو أعلى`}</span>
                         </li>
                       ))}
                     </ul>
