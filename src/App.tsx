@@ -74,7 +74,6 @@ const App = () => (
                     <Route path="/all-badges" element={<AllBadgesPage />} />
                     <Route path="/manager/evaluate" element={<Evaluate />} />
                     <Route path="/manager/history" element={<SupervisorHistory />} />
-                    <Route path="/manager/supervisor-dashboard" element={<SupervisorDashboard />} />
                   </Route>
                 </Route>
                 </Route>

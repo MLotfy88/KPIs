@@ -16,7 +16,6 @@ const ManagerLayout: React.FC = () => {
   const { setOpenMobile } = useSidebar();
   const navLinks = [
     { href: "/manager/dashboard", label: "لوحة تحكم المدير", icon: <Home /> },
-    { href: "/manager/supervisor-dashboard", label: "لوحة تحكم المشرف", icon: <LayoutDashboard /> },
     { href: "/manager/evaluate", label: "إجراء تقييم", icon: <ClipboardEdit /> },
     { href: "/manager/history", label: "سجل التقييمات", icon: <History /> },
     { href: "/manager/nurses", label: "فريق التمريض", icon: <Users /> },
