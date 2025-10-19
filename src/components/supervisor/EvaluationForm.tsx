@@ -167,7 +167,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
             </div>
           )}
         </div>
-        <div className="fixed bottom-0 left-0 right-0 w-full max-w-4xl mx-auto flex justify-between p-4 border-t bg-background">
+        <div className="fixed bottom-0 left-0 right-0 w-full flex justify-between p-4 border-t bg-background">
           {currentStep < items.length ? (
             <Button onClick={() => setCurrentStep(s => s + 1)} disabled={!scores[items[currentStep]?.item_key]}>
               التالي
@@ -218,7 +218,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
 
 
   return (
-    <div dir="rtl" className="w-full bg-card flex flex-col h-screen md:h-auto md:rounded-lg md:shadow-sm">
+    <div dir="rtl" className="w-full bg-card flex flex-col md:h-auto md:rounded-lg md:shadow-sm">
       <header className="text-right p-4 border-b">
         <h1 className="text-xl md:text-2xl font-bold">
           تقييم: {nurseName}
