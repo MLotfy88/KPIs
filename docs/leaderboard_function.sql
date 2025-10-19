@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS get_monthly_leaderboard();
 CREATE OR REPLACE FUNCTION get_monthly_leaderboard()
 RETURNS TABLE (
     nurse_id uuid,
