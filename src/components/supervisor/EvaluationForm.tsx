@@ -122,16 +122,23 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
           onValueChange={(value) => handleScoreChange(item.item_key, parseInt(value, 10))}
           className="space-y-4"
         >
-          {[1, 2, 3, 4, 5].map(score => (
-            <div key={score} className="flex items-start space-x-4 space-x-reverse">
-              <RadioGroupItem value={score.toString()} id={`item-${item.id}-score-${score}`} className="mt-1" />
-              <div className="flex flex-col">
-                <Label htmlFor={`item-${item.id}-score-${score}`} className="font-bold text-base mb-1">
-                  درجة {score}
+          {[5, 4, 3, 2, 1].map(score => (
+            <div key={score} className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground flex-1 pr-4">
+                {descriptions?.[score - 1] || `وصف الدرجة ${score}`}
+              </p>
+              <div className="flex items-center">
+                <RadioGroupItem
+                  value={score.toString()}
+                  id={`item-${item.id}-score-${score}`}
+                  className="peer sr-only"
+                />
+                <Label
+                  htmlFor={`item-${item.id}-score-${score}`}
+                  className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-muted bg-background text-xl font-bold ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground cursor-pointer"
+                >
+                  {score}
                 </Label>
-                <p className="text-sm text-muted-foreground">
-                  {descriptions?.[score - 1] || `وصف الدرجة ${score}`}
-                </p>
               </div>
             </div>
           ))}
@@ -197,7 +204,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
   const MainContent = () => isMobile ? renderMobileView() : renderDesktopView();
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-card md:border md:rounded-lg md:shadow-sm flex flex-col h-screen md:h-auto">
+    <div dir="rtl" className="w-full max-w-4xl mx-auto bg-card md:border md:rounded-lg md:shadow-sm flex flex-col h-screen md:h-auto">
       <header className="text-center p-4 border-b">
         <h1 className="text-xl md:text-2xl font-bold">تقييم: {nurseName}</h1>
         <p className="text-sm text-muted-foreground">

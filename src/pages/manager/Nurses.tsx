@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { getAllNurses, addNurse, getAllEvaluations, updateNurse, deleteNurse } from '@/lib/api';
 import { Nurse, Evaluation } from '@/types';
-import { Loader2, Search, ArrowUpDown, PlusCircle, MoreHorizontal, ArrowUp, ArrowDown } from 'lucide-react';
+import { Loader2, Search, ArrowUpDown, PlusCircle, MoreHorizontal, ArrowUp, ArrowDown, User, UserRound } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,6 +56,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -74,6 +79,7 @@ const nurseFormSchema = z.object({
   }),
   photo_url: z.string().url({ message: "الرجاء إدخال رابط صحيح." }).optional().or(z.literal('')),
   is_active: z.boolean().default(true),
+  created_at: z.date().optional(),
 });
 
 type NurseFormValues = z.infer<typeof nurseFormSchema>;
@@ -209,6 +215,7 @@ const NursesPage: React.FC = () => {
       gender: nurse.gender,
       photo_url: nurse.photo_url,
       is_active: nurse.is_active,
+      created_at: new Date(nurse.created_at),
     });
     setIsDialogOpen(true);
   };
@@ -383,6 +390,49 @@ const NursesPage: React.FC = () => {
                     </FormItem>
                   )}
                 />
+                {editingNurse && (
+                  <FormField
+                    control={form.control}
+                    name="created_at"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>تاريخ الانضمام</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>اختر تاريخًا</span>
+                                )}
+                                <CalendarIcon className="mr-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
                   name="is_active"
@@ -457,8 +507,13 @@ const NursesPage: React.FC = () => {
                 <TableCell>
                   <Avatar>
                     <AvatarImage src={nurse.photo_url} alt={nurse.name} loading="lazy" />
-                    <AvatarFallback>
-                      {nurse.gender === 'male' ? 'M' : 'F'}
+                    <AvatarFallback className="bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                      {!nurse.photo_url && (
+                        nurse.gender === 'female' 
+                          ? <UserRound className="w-5 h-5 text-gray-500" /> 
+                          : <User className="w-5 h-5 text-gray-500" />
+                      )}
+                      {nurse.photo_url && nurse.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                 </TableCell>
