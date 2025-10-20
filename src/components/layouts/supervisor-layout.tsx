@@ -47,7 +47,7 @@ const SupervisorLayout: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0">
         <Header />
         <main className="flex-1 flex flex-col p-4 sm:p-6 md:p-8">
-          <div className="max-w-7xl mx-auto w-full flex-grow flex">
+          <div className="max-w-7xl mx-auto w-full flex-grow flex flex-col">
             <Outlet />
           </div>
         </main>
