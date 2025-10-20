@@ -120,14 +120,16 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
         <RadioGroup
           value={scores[item.item_key]?.toString() || ''}
           onValueChange={(value) => handleScoreChange(item.item_key, parseInt(value, 10))}
-          className="space-y-4 w-full"
+          className="space-y-4"
         >
           {[5, 4, 3, 2, 1].map(score => (
-            <div key={score} className="flex items-center justify-between">
-              <p className="text-xs font-bold text-muted-foreground flex-1 pr-2 text-right">
-                {descriptions?.[score - 1] || `وصف الدرجة ${score}`}
-              </p>
-              <div className="flex items-center">
+            <div key={score} className="flex items-center justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-muted-foreground text-right break-words">
+                  {descriptions?.[score - 1] || `وصف الدرجة ${score}`}
+                </p>
+              </div>
+              <div className="flex items-center flex-shrink-0">
                 <RadioGroupItem
                   value={score.toString()}
                   id={`item-${item.id}-score-${score}`}

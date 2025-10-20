@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { 
   Sidebar, 
   SidebarHeader, 
@@ -14,8 +14,6 @@ import { Home, Users, BarChart2, FileCheck, UserCog, Award, Library, ClipboardEd
 
 const ManagerLayout: React.FC = () => {
   const { setOpenMobile } = useSidebar();
-  const location = useLocation();
-  const isEvaluatePage = location.pathname.includes("/evaluate");
   
   const leaderboardLink = { href: "/manager/leaderboard", label: "لوحة الدرجات", icon: <BarChart2 /> };
   
@@ -69,10 +67,10 @@ const ManagerLayout: React.FC = () => {
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 w-full overflow-x-hidden">
         <Header />
-        <main className={isEvaluatePage ? "flex-1" : "flex-1 p-4 sm:p-6 md:p-8"}>
-          <div className={isEvaluatePage ? "" : "max-w-7xl mx-auto"}>
+        <main className="flex-1 p-4 sm:p-6 md:p-8">
+          <div className="max-w-7xl mx-auto w-full">
             <Outlet />
           </div>
         </main>
