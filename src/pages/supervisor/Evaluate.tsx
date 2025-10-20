@@ -124,13 +124,13 @@ const Evaluate = () => {
     switch (step) {
       case 'SELECT_NURSE':
         return (
-          <div className="w-full">
+          <>
             <div className="p-4 text-right">
               <h2 className="text-xl font-bold">الخطوة 1: اختيار الممرض</h2>
               <p className="text-muted-foreground">اختر الممرض الذي تود تقييمه.</p>
             </div>
             <NurseSelector onNurseSelect={handleNurseSelect} />
-          </div>
+          </>
         );
       case 'SELECT_TYPE':
         return (

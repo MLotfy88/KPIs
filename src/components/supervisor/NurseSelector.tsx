@@ -56,21 +56,22 @@ const NurseSelector = ({ onNurseSelect }: NurseSelectorProps) => {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="mb-4"
       />
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="flex flex-wrap gap-4 justify-center">
         {filteredNurses.map(nurse => (
-          <Card
-            key={nurse.id}
-            className="cursor-pointer hover:border-primary transition-all"
-            onClick={() => onNurseSelect(nurse)}
-          >
-            <CardContent className="flex flex-col items-center justify-center p-4">
-              <Avatar className="w-20 h-20 mb-2">
-                <AvatarImage src={nurse.photo_url || ''} alt={nurse.name} />
-                <AvatarFallback>{nurse.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <p className="font-medium text-center">{nurse.name}</p>
-            </CardContent>
-          </Card>
+          <div key={nurse.id} className="w-1/2 sm:w-1/3 md:w-1/4 p-2">
+            <Card
+              className="cursor-pointer hover:border-primary transition-all h-full"
+              onClick={() => onNurseSelect(nurse)}
+            >
+              <CardContent className="flex flex-col items-center justify-center p-4 h-full">
+                <Avatar className="w-20 h-20 mb-2">
+                  <AvatarImage src={nurse.photo_url || ''} alt={nurse.name} />
+                  <AvatarFallback>{nurse.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <p className="font-medium text-center whitespace-normal flex-grow">{nurse.name}</p>
+              </CardContent>
+            </Card>
+          </div>
         ))}
       </div>
       {filteredNurses.length === 0 && (
