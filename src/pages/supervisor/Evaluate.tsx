@@ -184,8 +184,10 @@ const Evaluate = () => {
   };
 
   return (
-    <div className="w-full">
-      {renderStep()}
+    <div className="w-full min-h-screen flex flex-col">
+      <div className="flex-1 w-full max-w-full overflow-hidden">
+        {renderStep()}
+      </div>
     </div>
   );
 };

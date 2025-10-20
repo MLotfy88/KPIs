@@ -116,20 +116,20 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
 
     return (
       <div key={item.id} className="w-full bg-background py-4 px-2 sm:px-4 border-b">
-        <p className="font-bold mb-4 text-base">{index + 1}. {item.question}</p>
+        <p className="font-bold mb-4 text-sm sm:text-base break-words">{index + 1}. {item.question}</p>
         <RadioGroup
           value={scores[item.item_key]?.toString() || ''}
           onValueChange={(value) => handleScoreChange(item.item_key, parseInt(value, 10))}
-          className="space-y-4"
+          className="space-y-2 sm:space-y-4"
         >
           {[5, 4, 3, 2, 1].map(score => (
-            <div key={score} className="flex items-center justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-muted-foreground text-right break-words">
+            <div key={score} className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
+              <div className="flex-1 min-w-0 w-full">
+                <p className="text-xs sm:text-sm font-bold text-muted-foreground text-right break-words pr-2">
                   {descriptions?.[score - 1] || `وصف الدرجة ${score}`}
                 </p>
               </div>
-              <div className="flex items-center flex-shrink-0">
+              <div className="flex items-center flex-shrink-0 self-end sm:self-auto">
                 <RadioGroupItem
                   value={score.toString()}
                   id={`item-${item.id}-score-${score}`}
@@ -137,7 +137,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
                 />
                 <Label
                   htmlFor={`item-${item.id}-score-${score}`}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-muted-foreground bg-background text-xl font-bold ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground cursor-pointer"
+                  className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-muted-foreground bg-background text-lg sm:text-xl font-bold ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground cursor-pointer"
                 >
                   {score}
                 </Label>
@@ -156,32 +156,46 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
 
     return (
       <>
-        <div className="pb-20"> 
+        <div className="pb-20 w-full overflow-hidden"> 
           {currentItem ? renderEvaluationItem(currentItem, currentStep) : (
-            <div className="p-4 md:p-6">
-              <h3 className="text-xl font-bold mb-4">الخطوة الأخيرة: الملاحظات العامة</h3>
+            <div className="p-3 sm:p-4 md:p-6 w-full">
+              <h3 className="text-lg sm:text-xl font-bold mb-4 break-words">الخطوة الأخيرة: الملاحظات العامة</h3>
               <Textarea
                 placeholder="أضف أي ملاحظات عامة حول التقييم هنا..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                rows={8}
+                rows={6}
+                className="w-full resize-none"
               />
             </div>
           )}
         </div>
-        <div className="fixed bottom-0 left-0 right-0 w-full flex justify-between p-4 border-t bg-background">
+        <div className="fixed bottom-0 left-0 right-0 w-full flex flex-col-reverse sm:flex-row justify-between gap-2 p-3 sm:p-4 border-t bg-background">
+          <Button 
+            onClick={() => setCurrentStep(s => s - 1)} 
+            disabled={currentStep === 0} 
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
+            السابق
+          </Button>
           {currentStep < items.length ? (
-            <Button onClick={() => setCurrentStep(s => s + 1)} disabled={!scores[items[currentStep]?.item_key]}>
+            <Button 
+              onClick={() => setCurrentStep(s => s + 1)} 
+              disabled={!scores[items[currentStep]?.item_key]}
+              className="w-full sm:w-auto"
+            >
               التالي
             </Button>
           ) : (
-            <Button onClick={handleSubmit} disabled={completedItems < items.length} className="bg-green-600 hover:bg-green-700">
+            <Button 
+              onClick={handleSubmit} 
+              disabled={completedItems < items.length} 
+              className="bg-green-600 hover:bg-green-700 w-full sm:w-auto"
+            >
               إرسال التقييم
             </Button>
           )}
-          <Button onClick={() => setCurrentStep(s => s - 1)} disabled={currentStep === 0} variant="outline">
-            السابق
-          </Button>
         </div>
       </>
     );
@@ -220,35 +234,35 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
 
 
   return (
-    <div dir="rtl" className="w-full bg-card flex flex-col md:h-auto md:rounded-lg md:shadow-sm flex-1">
-      <header className="text-right p-4 border-b">
-        <h1 className="text-xl md:text-2xl font-bold">
+    <div dir="rtl" className="w-full bg-card flex flex-col h-full">
+      <header className="flex-shrink-0 text-right p-4 border-b">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold break-words">
           تقييم: {nurseName}
-          <span className="text-lg text-muted-foreground font-medium mr-2">
+          <span className="text-sm sm:text-lg text-muted-foreground font-medium mr-2">
             ({evaluationType === 'weekly' ? 'أسبوعي' : 'شهري'})
           </span>
         </h1>
-        <div className="flex items-center gap-4 pt-2 w-full max-w-sm ml-auto">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 pt-2 w-full">
           {isMobile ? (
             <>
-              <span className="font-bold text-primary text-sm whitespace-nowrap">
+              <span className="font-bold text-primary text-xs sm:text-sm whitespace-nowrap">
                 الخطوة {currentStep + 1} / {progressSteps}
               </span>
               <Progress value={mobileProgress} className="w-full" />
-              <span className="font-bold text-primary text-sm">{Math.round(mobileProgress)}%</span>
+              <span className="font-bold text-primary text-xs sm:text-sm">{Math.round(mobileProgress)}%</span>
             </>
           ) : (
             <>
-              <span className="font-bold text-primary text-sm whitespace-nowrap">
+              <span className="font-bold text-primary text-xs sm:text-sm whitespace-nowrap">
                 {completedItems} / {items.length} مكتمل
               </span>
-              <Progress value={progress} className="w-full" />
-              <span className="font-bold text-primary text-sm">{Math.round(progress)}%</span>
+              <Progress value={progress} className="w-full max-w-xs" />
+              <span className="font-bold text-primary text-xs sm:text-sm">{Math.round(progress)}%</span>
             </>
           )}
         </div>
       </header>
-      <main className="flex-grow overflow-y-auto px-2 md:px-0">
+      <main className="flex-grow overflow-y-auto overflow-x-hidden px-2 md:px-4">
         {isMobile ? renderMobileView() : renderDesktopView()}
       </main>
     </div>
