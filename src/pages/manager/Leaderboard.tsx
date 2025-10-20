@@ -154,7 +154,7 @@ const LeaderboardPage = () => {
   if (error) return <div className="text-center p-10 text-red-500">خطأ: {error}</div>;
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 lg:p-8" dir="rtl">
+    <div className="w-full page-container" dir="rtl">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div className="text-right">
           <h1 className="text-3xl font-bold">لوحة البورصة الشهرية</h1>
@@ -166,7 +166,7 @@ const LeaderboardPage = () => {
         </Button>
       </header>
       
-      <div className="border rounded-lg overflow-x-auto">
+      <div className="leaderboard-container border rounded-lg">
         <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <TableHeader className="bg-gray-50 dark:bg-gray-800">
             <TableRow>

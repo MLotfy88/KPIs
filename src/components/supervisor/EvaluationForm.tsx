@@ -234,7 +234,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
 
 
   return (
-    <div dir="rtl" className="w-full bg-card flex flex-col h-full">
+    <div dir="rtl" className="w-full bg-card flex flex-col h-full evaluation-container">
       <header className="flex-shrink-0 text-right p-4 border-b">
         <h1 className="text-lg sm:text-xl md:text-2xl font-bold break-words">
           تقييم: {nurseName}

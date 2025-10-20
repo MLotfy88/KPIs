@@ -91,7 +91,7 @@ const ManagerDashboard = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="w-full page-container space-y-6">
       <h1 className="text-3xl font-bold">لوحة تحكم المدير</h1>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

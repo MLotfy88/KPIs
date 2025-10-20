@@ -220,7 +220,7 @@ const ReportsPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="w-full page-container">
       <h1 className="text-2xl font-bold mb-6">التقارير والإحصائيات</h1>
       
       <Tabs value={reportType} onValueChange={setReportType} className="w-full">

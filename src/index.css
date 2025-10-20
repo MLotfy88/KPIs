@@ -141,3 +141,215 @@ html, body {
     max-width: 100%;
   }
 }
+
+/* --- START RESPONSIVE FIXES --- */
+
+/* Overriding container behavior */
+.container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive padding for container */
+@media (min-width: 768px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* Forcing full-width layouts */
+.min-h-screen {
+  width: 100vw;
+}
+.card, [class*="Card"], .grid, .flex {
+  width: 100%;
+}
+
+/* Sidebar layout fix */
+[data-sidebar="sidebar"] + div {
+  flex: 1;
+  min-width: 0; /* Prevents overflow */
+}
+
+/* Specific page/component containers */
+.evaluation-form-container {
+  width: 100vw;
+  max-width: 100vw;
+}
+.leaderboard-table-container, .reports-container {
+  width: 100%;
+  overflow-x: auto;
+}
+.nurses-grid {
+  width: 100%;
+  display: grid;
+  gap: 1rem;
+}
+.dashboard-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+.stats-card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table {
+    font-size: 0.875rem;
+  }
+  th, td {
+    padding: 0.5rem;
+    white-space: nowrap;
+  }
+}
+
+/* Chart fixes */
+.recharts-wrapper, .recharts-surface {
+  width: 100% !important;
+}
+
+/* Removing unnecessary max-width constraints */
+.max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-3xl {
+  max-width: 100% !important;
+}
+
+/* Setting a reasonable max-width for very large screens */
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1800px !important;
+  }
+}
+
+/* --- START LAYOUT FIXES --- */
+
+.page-container {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.sidebar-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+.sidebar-layout > .sidebar {
+  flex-shrink: 0;
+}
+.sidebar-layout > .content {
+  flex: 1;
+  min-width: 0;
+}
+
+main {
+  flex: 1;
+}
+
+.card-grid {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+}
+.table-container table {
+  min-width: 600px;
+}
+
+.form-container {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-container {
+  padding: 1rem;
+}
+@media (min-width: 768px) {
+  .dashboard-container {
+    padding: 2rem;
+  }
+}
+
+.chart-container {
+  height: 400px;
+  position: relative;
+}
+@media (max-width: 768px) {
+  .chart-container {
+    height: 300px;
+  }
+}
+
+.leaderboard-container {
+  overflow-x: auto;
+}
+.leaderboard-container table {
+  min-width: 900px;
+}
+
+.profile-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.reports-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .reports-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--background);
+}
+
+.fixed-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+.scrollable-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+html, body {
+  position: relative;
+}
+/* --- END OF FIXES --- */

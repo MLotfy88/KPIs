@@ -1,0 +1,850 @@
+سأساعدك في حل مشكلة التوافق مع أحجام الشاشات المختلفة. المشكلة تبدو أنها في عدم استخدام عرض الشاشة بالكامل عندما يكون المحتوى أقل من عرض الشاشة.
+
+دعني أفحص الكود وأقترح الحلول:
+
+## المشكلة الرئيسية:
+
+من خلال فحص الكود، المشكلة في:
+1. استخدام `container` class من Tailwind الذي يحد من العرض
+2. عدم استخدام `w-full` بشكل صحيح في بعض المكونات
+3. بعض المكونات تستخدم `max-w-*` classes التي تحد من العرض
+
+## الحل:
+
+سأقوم بتعديل الملفات التالية:
+دعنى أقوم بتحديث مكونات الـ Layout الرئيسية:
+
+/* أضف هذه القواعد في نهاية ملف src/index.css */
+
+/* إصلاح مشكلة العرض الكامل للشاشة */
+#root {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* التأكد من أن جميع الـ containers تستخدم العرض الكامل */
+.container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* للشاشات المتوسطة وما فوق */
+@media (min-width: 768px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* للشاشات الكبيرة */
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* إصلاح layout الصفحات */
+.min-h-screen {
+  width: 100vw;
+}
+
+/* إصلاح العرض للكروت والجداول */
+.card, [class*="Card"] {
+  width: 100%;
+}
+
+/* إصلاح الجداول للاستفادة من العرض الكامل */
+table {
+  width: 100%;
+  min-width: 100%;
+}
+
+/* إصلاح Grid layouts */
+.grid {
+  width: 100%;
+}
+
+/* إصلاح Flex layouts */
+.flex {
+  width: 100%;
+}
+
+/* إصلاح مشكلة الـ Sidebar */
+[data-sidebar="sidebar"] + div {
+  width: 100%;
+  flex: 1;
+  min-width: 0; /* مهم لمنع overflow */
+}
+
+/* إصلاح العرض في صفحة التقييم */
+.evaluation-form-container {
+  width: 100vw;
+  max-width: 100vw;
+}
+
+/* إصلاح مشكلة المسافات الجانبية */
+body {
+  overflow-x: hidden;
+  width: 100vw;
+}
+
+/* إصلاح Dialog والـ Modal */
+[role="dialog"] {
+  max-width: min(90vw, 600px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* إصلاح خاص لصفحة Leaderboard */
+.leaderboard-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* إصلاح خاص لصفحة Nurses */
+.nurses-grid {
+  width: 100%;
+  display: grid;
+  gap: 1rem;
+}
+
+/* تحسين responsive للجداول */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    font-size: 0.875rem;
+  }
+  
+  th, td {
+    padding: 0.5rem;
+    white-space: nowrap;
+  }
+}
+
+/* إصلاح لـ Dashboard Cards */
+.dashboard-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+/* إصلاح للـ Stats Cards */
+.stats-card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* إصلاح خاص لصفحة التقارير */
+.reports-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* إصلاح الـ Charts */
+.recharts-wrapper {
+  width: 100% !important;
+}
+
+.recharts-surface {
+  width: 100% !important;
+}
+
+/* إزالة أي max-width غير ضروري */
+.max-w-7xl,
+.max-w-6xl,
+.max-w-5xl,
+.max-w-4xl,
+.max-w-3xl {
+  max-width: 100% !important;
+}
+
+/* للشاشات الكبيرة جداً فقط نحدد max-width معقول */
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1800px !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+
+
+الآن دعني أقوم بتحديث ملف `src/pages/supervisor/Evaluate.tsx` لإصلاح مشكلة عرض نموذج التقييم:
+
+// استبدل محتوى src/pages/supervisor/Evaluate.tsx بهذا الكود
+
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  saveInProgressEvaluation,
+  loadInProgressEvaluation,
+  clearInProgressEvaluation,
+} from '@/lib/storage';
+import { Nurse, EvaluationType } from '@/types';
+import NurseSelector from '@/components/supervisor/NurseSelector';
+import EvaluationTypeSelector from '@/components/supervisor/EvaluationTypeSelector';
+import EvaluationForm from '@/components/supervisor/EvaluationForm';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { saveEvaluation } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
+import { CheckCircle } from 'lucide-react';
+
+type EvaluationStep = 'SELECT_NURSE' | 'SELECT_TYPE' | 'FILL_FORM' | 'CONFIRMATION';
+
+const Evaluate = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const preselectedType = location.state?.evaluationType as EvaluationType | undefined;
+
+  const [step, setStep] = useState<EvaluationStep>(preselectedType ? 'SELECT_NURSE' : 'SELECT_TYPE');
+  const [selectedNurse, setSelectedNurse] = useState<Nurse | null>(null);
+  const [evaluationType, setEvaluationType] = useState<EvaluationType | null>(preselectedType || null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const savedEvaluation = loadInProgressEvaluation();
+    if (savedEvaluation?.nurse && savedEvaluation?.evaluationType) {
+      if (preselectedType) {
+        clearInProgressEvaluation();
+        return;
+      }
+
+      if (window.confirm('لديك تقييم غير مكتمل. هل تود استكماله؟')) {
+        setSelectedNurse(savedEvaluation.nurse);
+        setEvaluationType(savedEvaluation.evaluationType);
+        setStep('FILL_FORM');
+      } else {
+        clearInProgressEvaluation();
+      }
+    }
+  }, [preselectedType]);
+
+  useEffect(() => {
+    if (selectedNurse) {
+      saveInProgressEvaluation({
+        nurse: selectedNurse,
+        evaluationType: evaluationType ?? undefined,
+        step: evaluationType ? 'FILL_FORM' : 'SELECT_TYPE',
+      });
+    }
+  }, [selectedNurse, evaluationType]);
+
+  const handleNurseSelect = (nurse: Nurse) => {
+    setSelectedNurse(nurse);
+    if (evaluationType) {
+      setStep('FILL_FORM');
+    } else {
+      setStep('SELECT_TYPE');
+    }
+  };
+
+  const handleTypeSelect = (type: EvaluationType) => {
+    setEvaluationType(type);
+    setStep('FILL_FORM');
+  };
+
+  const handleSubmit = async (scores: Record<string, number>, notes: string) => {
+    if (!selectedNurse || !evaluationType || !user) return;
+
+    setIsSubmitting(true);
+    try {
+      await saveEvaluation({
+        nurse_id: selectedNurse.id,
+        supervisor_id: user.id,
+        evaluation_type: evaluationType,
+        notes,
+        scores,
+      });
+
+      toast({
+        title: 'تم إرسال التقييم بنجاح',
+        description: `تم حفظ تقييم ${selectedNurse.name} بنجاح.`,
+      });
+      clearInProgressEvaluation();
+      setStep('CONFIRMATION');
+    } catch (error) {
+      console.error('Error submitting evaluation:', error);
+      toast({
+        title: 'حدث خطأ',
+        description: 'لم يتم حفظ التقييم. يرجى المحاولة مرة أخرى.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const renderStep = () => {
+    if (step === 'SELECT_TYPE' && !selectedNurse) {
+      setStep('SELECT_NURSE');
+    }
+
+    if (step === 'SELECT_TYPE' && preselectedType) {
+       setStep('FILL_FORM');
+       return null;
+    }
+
+    switch (step) {
+      case 'SELECT_NURSE':
+        return (
+          <div className="w-full min-h-screen p-4 md:p-6 lg:p-8">
+            <div className="w-full max-w-7xl mx-auto">
+              <div className="mb-6 text-right">
+                <h2 className="text-xl font-bold">الخطوة 1: اختيار الممرض</h2>
+                <p className="text-muted-foreground">اختر الممرض الذي تود تقييمه.</p>
+              </div>
+              <NurseSelector onNurseSelect={handleNurseSelect} />
+            </div>
+          </div>
+        );
+      case 'SELECT_TYPE':
+        return (
+          <div className="w-full min-h-screen p-4 md:p-6 lg:p-8">
+            <div className="w-full max-w-3xl mx-auto">
+              <Card>
+                <CardHeader>
+                  <CardTitle>الخطوة 2: اختيار نوع التقييم</CardTitle>
+                  <CardDescription>اختر نوع التقييم للممرض: {selectedNurse?.name}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <EvaluationTypeSelector onTypeSelect={handleTypeSelect} />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+      case 'FILL_FORM':
+        if (!evaluationType || !selectedNurse) return null;
+        return (
+          <div className="w-full min-h-screen">
+            <EvaluationForm 
+              evaluationType={evaluationType} 
+              onSubmit={handleSubmit}
+              nurseName={selectedNurse.name}
+            />
+          </div>
+        );
+      case 'CONFIRMATION':
+        return (
+          <div className="w-full min-h-screen p-4 md:p-6 lg:p-8">
+            <div className="w-full max-w-2xl mx-auto">
+              <Card className="text-center p-8">
+                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <CardTitle className="text-2xl mb-2">تم إرسال التقييم بنجاح!</CardTitle>
+                <CardDescription className="mb-6">
+                  تم حفظ تقييم الممرض "{selectedNurse?.name}" بنجاح.
+                </CardDescription>
+                <div className="flex gap-4 justify-center">
+                  <Button onClick={() => navigate('/supervisor/dashboard')}>العودة للوحة التحكم</Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setStep('SELECT_NURSE');
+                      setSelectedNurse(null);
+                      setEvaluationType(null);
+                      clearInProgressEvaluation();
+                    }}
+                  >
+                    بدء تقييم جديد
+                  </Button>
+                </div>
+              </Card>
+            </div>
+          </div>
+        );
+      default:
+        return <NurseSelector onNurseSelect={handleNurseSelect} />;
+    }
+  };
+
+  return (
+    <div className="w-full min-h-screen flex flex-col">
+      {renderStep()}
+    </div>
+  );
+};
+
+export default Evaluate;
+
+
+
+
+الآن دعني أقوم بإنشاء ملف تكميلي لإصلاح المشاكل في المكونات الأخرى:
+
+
+/* أضف هذه القواعد أيضاً في ملف src/index.css */
+
+/* إصلاح شامل لجميع الصفحات */
+.page-container {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* إصلاح خاص للصفحات التي تحتوي على Sidebar */
+.sidebar-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.sidebar-layout > .sidebar {
+  flex-shrink: 0;
+}
+
+.sidebar-layout > .content {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+/* إصلاح للـ Main content area */
+main {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+}
+
+/* إصلاح لـ Cards داخل Grid */
+.card-grid {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+/* إصلاح للـ Tables */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-container table {
+  width: 100%;
+  min-width: 600px; /* حد أدنى للعرض لمنع التشوه */
+}
+
+/* إصلاح للـ Forms */
+.form-container {
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* إصلاح للـ Dashboard */
+.dashboard-container {
+  width: 100%;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard-container {
+    padding: 2rem;
+  }
+}
+
+/* إصلاح لـ Modal/Dialog */
+.modal-content {
+  width: 90vw;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* إصلاح لـ Evaluation Form */
+.evaluation-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* إصلاح لـ Mobile Navigation */
+@media (max-width: 768px) {
+  .mobile-nav {
+    width: 100vw;
+    left: 0;
+    right: 0;
+  }
+}
+
+/* إصلاح لـ Responsive Images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* إصلاح لـ Avatar components */
+.avatar-container {
+  flex-shrink: 0;
+}
+
+/* إصلاح لـ Breadcrumbs */
+.breadcrumb-container {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* إصلاح لـ Tabs */
+.tabs-container {
+  width: 100%;
+}
+
+.tabs-list {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* إصلاح لـ Accordion */
+.accordion-container {
+  width: 100%;
+}
+
+/* إصلاح لـ Alert/Banner */
+.alert-container {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* إصلاح لـ Progress bars */
+.progress-container {
+  width: 100%;
+}
+
+/* إصلاح لـ Badge containers */
+.badges-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* إصلاح لـ Chart containers */
+.chart-container {
+  width: 100%;
+  height: 400px;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    height: 300px;
+  }
+}
+
+/* إصلاح لـ Leaderboard specific */
+.leaderboard-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.leaderboard-container table {
+  min-width: 900px;
+}
+
+@media (max-width: 1024px) {
+  .leaderboard-container table {
+    font-size: 0.875rem;
+  }
+  
+  .leaderboard-container th,
+  .leaderboard-container td {
+    padding: 0.5rem;
+  }
+}
+
+/* إصلاح لـ Profile page */
+.profile-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* إصلاح لـ Reports page */
+.reports-grid {
+  display: grid;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .reports-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
+/* إصلاح للمسافات الداخلية في الـ Mobile */
+@media (max-width: 640px) {
+  .mobile-padding {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* إصلاح لـ Sticky headers */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+  width: 100%;
+}
+
+/* إصلاح لـ Fixed footers */
+.fixed-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 20;
+}
+
+/* إصلاح لـ Scrollable content */
+.scrollable-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* منع horizontal scroll غير المرغوب */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+
+
+الآن دعني أقوم بإنشاء دليل تطبيق الإصلاحات:
+
+
+دليل تطبيق إصلاحات التوافق مع أحجام الشاشات
+
+الخطوات المطلوبة:
+
+1. تحديث ملف CSS الرئيسي
+
+أضف جميع القواعد من الملفات:
+
+responsive_fixes
+
+layout_fixes
+
+إلى نهاية ملف src/index.css
+
+2. تحديث صفحة التقييم
+
+استبدل محتوى ملف src/pages/supervisor/Evaluate.tsx بالكود الموجود في evaluate_page_fix
+
+3. إضافة Classes إلى المكونات الحالية
+
+في src/pages/manager/Dashboard.tsx:
+
+// غير السطر: <div className="container mx-auto p-4 space-y-6"> // إلى: <div className="w-full page-container space-y-6"> 
+
+في src/pages/manager/Nurses.tsx:
+
+// غير السطر: <div className="container mx-auto p-4"> // إلى: <div className="w-full page-container"> 
+
+في src/pages/manager/Leaderboard.tsx:
+
+// غير السطر: <div className="container mx-auto p-4 sm:p-6 lg:p-8" dir="rtl"> // إلى: <div className="w-full page-container" dir="rtl"> // وغير: <div className="border rounded-lg overflow-x-auto"> // إلى: <div className="leaderboard-container border rounded-lg"> 
+
+في src/pages/manager/Reports.tsx:
+
+// أضف class للـ container الرئيسي: <div className="w-full page-container"> 
+
+في src/pages/manager/NurseProfile.tsx:
+
+// غير السطر: <div className="container mx-auto p-4 space-y-6"> // إلى: <div className="profile-container p-4 space-y-6"> 
+
+4. تحديث Layout Components
+
+في src/components/layouts/manager-layout.tsx:
+
+// في السطر: <main className="flex-1 flex flex-col p-4 sm:p-6 md:p-8"> <div className="max-w-7xl mx-auto w-full flex-grow flex flex-col"> // غيره إلى: <main className="flex-1 flex flex-col p-4 sm:p-6 md:p-8 w-full"> <div className="w-full flex-grow flex flex-col"> 
+
+في src/components/layouts/supervisor-layout.tsx:
+
+// نفس التغيير السابق 
+
+5. إصلاح مكون EvaluationForm
+
+في src/components/supervisor/EvaluationForm.tsx، غير:
+
+return ( <div dir="rtl" className="w-full bg-card flex flex-col h-full"> 
+
+6. التحقق من التطبيق الصحيح
+
+بعد تطبيق جميع التغييرات:
+
+اختبر الصفحات التالية:
+
+Dashboard (Manager & Supervisor)
+
+Nurses List
+
+Leaderboard
+
+Evaluation Form
+
+Reports
+
+Nurse Profile
+
+اختبر على أحجام شاشات مختلفة:
+
+Mobile (320px - 768px)
+
+Tablet (768px - 1024px)
+
+Desktop (1024px - 1920px)
+
+Large Desktop (1920px+)
+
+تحقق من:
+
+عدم وجود مسافات فارغة كبيرة على الجانبين
+
+استخدام العرض الكامل للشاشة
+
+عدم حدوث overflow أفقي
+
+توافق الجداول مع الشاشات الصغيرة
+
+7. إصلاحات إضافية (اختيارية)
+
+إذا استمرت المشاكل في صفحات معينة:
+
+لصفحات بها Tables:
+
+<div className="table-container"> <Table> {/* ... */} </Table> </div> 
+
+لصفحات بها Charts:
+
+<div className="chart-container"> <ResponsiveContainer width="100%" height="100%"> {/* ... */} </ResponsiveContainer> </div> 
+
+لصفحات بها Grid of Cards:
+
+<div className="card-grid"> {/* Cards here */} </div> 
+
+8. نصائح عامة
+
+تجنب استخدام:
+
+max-w-* classes إلا للـ modals والـ forms
+
+Fixed widths
+
+container class بدون تخصيص
+
+استخدم دائماً:
+
+w-full للعناصر الرئيسية
+
+min-w-0 للعناصر داخل flex/grid لمنع overflow
+
+overflow-x-hidden على body و html
+
+للجداول:
+
+دائماً ضعها داخل container مع overflow-x-auto
+
+حدد min-width معقول للجدول
+
+استخدم responsive font sizes
+
+الأخطاء الشائعة وحلولها:
+
+المشكلة: مازالت هناك مسافة فارغة
+
+الحل: تحقق من:
+
+عدم وجود container class بدون تخصيص
+
+عدم وجود max-w-* classes غير ضرورية
+
+أن جميع parent elements لديها w-full
+
+المشكلة: overflow أفقي في mobile
+
+الحل:
+
+أضف overflow-x-hidden على body
+
+تحقق من عدم وجود fixed widths
+
+استخدم min-w-0 في flex containers
+
+المشكلة: الجداول لا تظهر بشكل صحيح في mobile
+
+الحل:
+
+ضع الجدول في div مع class table-container
+
+استخدم font sizes أصغر في mobile
+
+فكر في استخدام card layout للـ mobile بدلاً من الجدول
+
+اختبار نهائي:
+
+قم بتشغيل التطبيق واختبر على:
+
+Chrome DevTools (F12) -> Responsive mode
+
+جهاز حقيقي (mobile/tablet)
+
+شاشات مختلفة
+
+يجب أن ترى الآن: ✅ استخدام كامل لعرض الشاشة ✅ عدم وجود مسافات فارغة كبيرة ✅
+
+

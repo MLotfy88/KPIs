@@ -305,7 +305,7 @@ const NursesPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="w-full page-container">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold">إدارة فريق التمريض</h1>
         <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {

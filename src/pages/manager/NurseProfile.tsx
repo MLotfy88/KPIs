@@ -184,7 +184,7 @@ const NurseProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="profile-container p-4 space-y-6">
       <Card>
         <CardHeader className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">
           <Avatar className="h-24 w-24">

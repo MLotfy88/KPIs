@@ -30,11 +30,9 @@ const Evaluate = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Load saved evaluation on mount
   useEffect(() => {
     const savedEvaluation = loadInProgressEvaluation();
     if (savedEvaluation?.nurse && savedEvaluation?.evaluationType) {
-      // If coming from a direct link, ignore saved evaluations
       if (preselectedType) {
         clearInProgressEvaluation();
         return;
@@ -50,7 +48,6 @@ const Evaluate = () => {
     }
   }, [preselectedType]);
 
-  // Save progress whenever nurse or type changes
   useEffect(() => {
     if (selectedNurse) {
       saveInProgressEvaluation({
@@ -80,21 +77,19 @@ const Evaluate = () => {
 
     setIsSubmitting(true);
     try {
-      // The final_score is no longer calculated on the client-side.
-      // The new saveEvaluation function handles the new structure.
       await saveEvaluation({
         nurse_id: selectedNurse.id,
         supervisor_id: user.id,
         evaluation_type: evaluationType,
         notes,
-        scores, // Pass scores object as per the new EvaluationSubmission type
+        scores,
       });
 
       toast({
         title: 'تم إرسال التقييم بنجاح',
         description: `تم حفظ تقييم ${selectedNurse.name} بنجاح.`,
       });
-      clearInProgressEvaluation(); // Clear storage on success
+      clearInProgressEvaluation();
       setStep('CONFIRMATION');
     } catch (error) {
       console.error('Error submitting evaluation:', error);
@@ -110,73 +105,81 @@ const Evaluate = () => {
 
   const renderStep = () => {
     if (step === 'SELECT_TYPE' && !selectedNurse) {
-      // If for some reason we are at SELECT_TYPE but have no nurse, go back.
       setStep('SELECT_NURSE');
     }
 
-    // If a type is pre-selected, we don't need to show the type selector.
-    // The main flow will handle moving from nurse selection to the form.
     if (step === 'SELECT_TYPE' && preselectedType) {
        setStep('FILL_FORM');
-       return null; // Render nothing this cycle, will re-render with form
+       return null;
     }
 
     switch (step) {
       case 'SELECT_NURSE':
         return (
-          <>
-            <div className="p-4 text-right">
-              <h2 className="text-xl font-bold">الخطوة 1: اختيار الممرض</h2>
-              <p className="text-muted-foreground">اختر الممرض الذي تود تقييمه.</p>
+          <div className="w-full min-h-screen p-4 md:p-6 lg:p-8">
+            <div className="w-full max-w-7xl mx-auto">
+              <div className="mb-6 text-right">
+                <h2 className="text-xl font-bold">الخطوة 1: اختيار الممرض</h2>
+                <p className="text-muted-foreground">اختر الممرض الذي تود تقييمه.</p>
+              </div>
+              <NurseSelector onNurseSelect={handleNurseSelect} />
             </div>
-            <NurseSelector onNurseSelect={handleNurseSelect} />
-          </>
+          </div>
         );
       case 'SELECT_TYPE':
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>الخطوة 2: اختيار نوع التقييم</CardTitle>
-              <CardDescription>اختر نوع التقييم للممرض: {selectedNurse?.name}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <EvaluationTypeSelector onTypeSelect={handleTypeSelect} />
-            </CardContent>
-          </Card>
+          <div className="w-full min-h-screen p-4 md:p-6 lg:p-8">
+            <div className="w-full max-w-3xl mx-auto">
+              <Card>
+                <CardHeader>
+                  <CardTitle>الخطوة 2: اختيار نوع التقييم</CardTitle>
+                  <CardDescription>اختر نوع التقييم للممرض: {selectedNurse?.name}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <EvaluationTypeSelector onTypeSelect={handleTypeSelect} />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         );
       case 'FILL_FORM':
         if (!evaluationType || !selectedNurse) return null;
         return (
-          <EvaluationForm 
-            evaluationType={evaluationType} 
-            onSubmit={handleSubmit}
-            nurseName={selectedNurse.name}
-          />
+          <div className="w-full min-h-screen">
+            <EvaluationForm 
+              evaluationType={evaluationType} 
+              onSubmit={handleSubmit}
+              nurseName={selectedNurse.name}
+            />
+          </div>
         );
       case 'CONFIRMATION':
         return (
-          <Card className="text-center p-8">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <CardTitle className="text-2xl mb-2">تم إرسال التقييم بنجاح!</CardTitle>
-            <CardDescription className="mb-6">
-              تم حفظ تقييم الممرض "{selectedNurse?.name}" بنجاح.
-            </CardDescription>
-            <div className="flex gap-4 justify-center">
-              <Button onClick={() => navigate('/supervisor/dashboard')}>العودة للوحة التحكم</Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  // Reset state for a new evaluation
-                  setStep('SELECT_NURSE');
-                  setSelectedNurse(null);
-                  setEvaluationType(null);
-                  clearInProgressEvaluation(); // Ensure storage is cleared
-                }}
-              >
-                بدء تقييم جديد
-              </Button>
+          <div className="w-full min-h-screen p-4 md:p-6 lg:p-8">
+            <div className="w-full max-w-2xl mx-auto">
+              <Card className="text-center p-8">
+                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <CardTitle className="text-2xl mb-2">تم إرسال التقييم بنجاح!</CardTitle>
+                <CardDescription className="mb-6">
+                  تم حفظ تقييم الممرض "{selectedNurse?.name}" بنجاح.
+                </CardDescription>
+                <div className="flex gap-4 justify-center">
+                  <Button onClick={() => navigate('/supervisor/dashboard')}>العودة للوحة التحكم</Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setStep('SELECT_NURSE');
+                      setSelectedNurse(null);
+                      setEvaluationType(null);
+                      clearInProgressEvaluation();
+                    }}
+                  >
+                    بدء تقييم جديد
+                  </Button>
+                </div>
+              </Card>
             </div>
-          </Card>
+          </div>
         );
       default:
         return <NurseSelector onNurseSelect={handleNurseSelect} />;
@@ -185,9 +188,7 @@ const Evaluate = () => {
 
   return (
     <div className="w-full min-h-screen flex flex-col">
-      <div className="flex-1 w-full max-w-full overflow-hidden">
-        {renderStep()}
-      </div>
+      {renderStep()}
     </div>
   );
 };
