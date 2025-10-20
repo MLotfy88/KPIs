@@ -38,7 +38,7 @@ const LoadingFallback = () => (
 
 // This new component will contain all routes that need the sidebar.
 const ProtectedRoutesWithSidebar = () => (
-  <SidebarProvider>
+  <SidebarProvider defaultOpen={false}>
     <Routes>
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>

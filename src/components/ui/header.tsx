@@ -13,7 +13,7 @@ const Header: React.FC = () => {
     <header className="w-full p-4 bg-white border-b dark:bg-gray-800">
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
-          {isMobile && <SidebarTrigger />}
+          <SidebarTrigger />
           {/* Breadcrumbs or page title can go here */}
         </div>
         <div className="flex items-center gap-4">

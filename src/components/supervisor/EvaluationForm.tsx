@@ -123,13 +123,13 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
           className="space-y-2 sm:space-y-4"
         >
           {[5, 4, 3, 2, 1].map(score => (
-            <div key={score} className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-2">
-              <div className="flex-1 min-w-0 w-full">
-                <p className="text-xs sm:text-sm font-bold text-muted-foreground text-right break-words pr-2">
+            <div key={score} className="flex flex-row items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground text-right break-words">
                   {descriptions?.[score - 1] || `وصف الدرجة ${score}`}
                 </p>
               </div>
-              <div className="flex items-center flex-shrink-0 self-end sm:self-auto">
+              <div className="flex items-center flex-shrink-0">
                 <RadioGroupItem
                   value={score.toString()}
                   id={`item-${item.id}-score-${score}`}

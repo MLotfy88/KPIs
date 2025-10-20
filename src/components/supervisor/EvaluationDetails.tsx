@@ -1,8 +1,9 @@
-import { Evaluation, User } from '@/types';
+import { Evaluation, User, EvaluationItem } from '@/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { weeklyItems, monthlyItems } from '@/lib/evaluationItems';
+import { getEvaluationItems } from '@/lib/api';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
+import { useState, useEffect } from 'react';
 
 interface EvaluationDetailsProps {
   evaluation: Evaluation | null;
@@ -12,9 +13,28 @@ interface EvaluationDetailsProps {
 }
 
 const EvaluationDetails = ({ evaluation, isOpen, onClose, supervisors }: EvaluationDetailsProps) => {
+  const [items, setItems] = useState<EvaluationItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (evaluation) {
+      const fetchItems = async () => {
+        try {
+          setIsLoading(true);
+          const fetchedItems = await getEvaluationItems(evaluation.evaluation_type);
+          setItems(fetchedItems);
+        } catch (error) {
+          console.error("Failed to fetch evaluation items for details:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchItems();
+    }
+  }, [evaluation]);
+
   if (!evaluation) return null;
 
-  const items = evaluation.evaluation_type === 'weekly' ? weeklyItems : monthlyItems;
   const supervisorName = supervisors.find(s => s.id === evaluation.supervisor_id)?.name || 'غير معروف';
 
   return (
@@ -45,14 +65,18 @@ const EvaluationDetails = ({ evaluation, isOpen, onClose, supervisors }: Evaluat
 
           <h3 className="font-bold mt-6 mb-2">تفاصيل البنود</h3>
           <div className="space-y-3">
-            {items.map(item => (
-              <div key={item.id} className="p-3 border rounded-md">
-                <p className="font-medium">{item.text}</p>
-                <p className="text-lg font-bold text-primary mt-1">
-                  التقييم: {evaluation.scores[item.id] || 'N/A'} / 5
-                </p>
-              </div>
-            ))}
+            {isLoading ? (
+              <p>جاري تحميل البنود...</p>
+            ) : (
+              items.map(item => (
+                <div key={item.id} className="p-3 border rounded-md">
+                  <p className="font-medium">{item.question}</p>
+                  <p className="text-lg font-bold text-primary mt-1">
+                    التقييم: {evaluation.scores[item.item_key] || 'N/A'} / 5
+                  </p>
+                </div>
+              ))
+            )}
           </div>
 
           {evaluation.notes && (
