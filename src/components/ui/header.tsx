@@ -10,14 +10,15 @@ const Header: React.FC = () => {
   const { isMobile } = useSidebar();
 
   return (
-    <header className="flex items-center justify-between p-4 bg-white border-b dark:bg-gray-800">
-      <div className="flex items-center gap-2">
-        {isMobile && <SidebarTrigger />}
-        {/* Breadcrumbs or page title can go here */}
-      </div>
-      <div className="flex items-center gap-4">
-        <Notifications />
-        <DropdownMenu>
+    <header className="w-full p-4 bg-white border-b dark:bg-gray-800">
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center gap-2">
+          {isMobile && <SidebarTrigger />}
+          {/* Breadcrumbs or page title can go here */}
+        </div>
+        <div className="flex items-center gap-4">
+          <Notifications />
+          <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative w-8 h-8 rounded-full">
               <Avatar>
@@ -39,6 +40,7 @@ const Header: React.FC = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
     </header>
   );

@@ -170,7 +170,7 @@ html, body {
 .min-h-screen {
   width: 100vw;
 }
-.card, [class*="Card"], .grid, .flex {
+.card, [class*="Card"], .grid {
   width: 100%;
 }
 

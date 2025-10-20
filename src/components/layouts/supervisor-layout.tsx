@@ -44,12 +44,10 @@ const SupervisorLayout: React.FC = () => {
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 bg-gray-50/50">
         <Header />
-        <main className="flex-1 flex flex-col p-4 sm:p-6 md:p-8 w-full">
-          <div className="w-full flex-grow flex flex-col">
-            <Outlet />
-          </div>
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
+          <Outlet />
         </main>
       </div>
     </div>
