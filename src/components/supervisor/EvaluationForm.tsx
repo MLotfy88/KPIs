@@ -56,12 +56,13 @@ const weeklyDescriptions: Record<string, string[]> = {
 };
 
 interface EvaluationFormProps {
+  nurseId: string;
   evaluationType: EvaluationType;
   onSubmit: (scores: Record<string, number>, notes: string) => void;
   nurseName: string;
 }
 
-const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormProps) => {
+const EvaluationForm = ({ nurseId, evaluationType, onSubmit, nurseName }: EvaluationFormProps) => {
   const [items, setItems] = useState<EvaluationItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [scores, setScores] = useState<Record<string, number>>({});
@@ -75,7 +76,7 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
         setIsLoading(true);
         const fetchedItems = await getEvaluationItems(evaluationType);
         setItems(fetchedItems);
-        const savedData = loadInProgressEvaluation();
+        const savedData = loadInProgressEvaluation(nurseId, evaluationType);
         if (savedData) {
           setScores(savedData.scores || {});
           setNotes(savedData.notes || '');
@@ -87,12 +88,11 @@ const EvaluationForm = ({ evaluationType, onSubmit, nurseName }: EvaluationFormP
       }
     };
     fetchItems();
-  }, [evaluationType]);
+  }, [nurseId, evaluationType]);
 
   useEffect(() => {
-    const currentData = loadInProgressEvaluation() || {};
-    saveInProgressEvaluation({ ...currentData, scores, notes });
-  }, [scores, notes]);
+    saveInProgressEvaluation(nurseId, evaluationType, { scores, notes });
+  }, [scores, notes, nurseId, evaluationType]);
 
   const completedItems = useMemo(() => Object.keys(scores).length, [scores]);
   const progress = (completedItems / items.length) * 100;

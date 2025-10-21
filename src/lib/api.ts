@@ -28,7 +28,7 @@ export const getActiveNurses = async (): Promise<Nurse[]> => {
 };
 
 export const getEvaluationItems = async (evaluationType?: 'weekly' | 'monthly'): Promise<EvaluationItem[]> => {
-  let query = supabase.from('evaluation_items').select('*, rubrics, evaluation_types');
+  let query = supabase.from('evaluation_items').select('*');
 
   if (evaluationType) {
     query = query.contains('evaluation_types', [evaluationType]);
@@ -255,8 +255,39 @@ export const saveAudit = async (auditData: Omit<Audit, 'id' | 'created_at'>): Pr
         await notifyEvaluationAudited(auditData.evaluation_id, nurseData.name, evaluationData.supervisor_id, auditData.decision);
     }
   }
-
+  
   return data;
+};
+
+export const checkIfEvaluationExists = async (nurseId: string, evaluationType: 'weekly' | 'monthly'): Promise<boolean> => {
+  const now = new Date();
+  let startDate: string;
+
+  if (evaluationType === 'weekly') {
+    const dayOfWeek = now.getDay(); // Sunday = 0, Saturday = 6
+    const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1) -1; // Adjust to make Saturday the start of the week
+    const startOfWeek = new Date(now.setDate(diff));
+    startOfWeek.setHours(0, 0, 0, 0);
+    startDate = startOfWeek.toISOString();
+  } else { // monthly
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    startOfMonth.setHours(0, 0, 0, 0);
+    startDate = startOfMonth.toISOString();
+  }
+
+  const { data, error } = await supabase
+    .from('evaluations')
+    .select('id')
+    .eq('nurse_id', nurseId)
+    .eq('evaluation_type', evaluationType)
+    .gte('created_at', startDate);
+
+  if (error) {
+    console.error('Error checking for existing evaluation:', error);
+    throw new Error(error.message);
+  }
+
+  return data && data.length > 0;
 };
 
 export const addUser = async (userData: Omit<User, 'id'>): Promise<User> => {
