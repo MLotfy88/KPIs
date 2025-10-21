@@ -48,7 +48,10 @@ export interface EvaluationItem {
   item_key: string;
   question: string;
   category: string;
+  evaluation_types?: EvaluationType[]; // Add this if not already present and needed
+  rubrics?: Record<string, string>; // Add this
   created_at: string;
+  updated_at?: string; // Add this for upsert operations
 }
 
 // Represents a record in the new evaluation_scores table

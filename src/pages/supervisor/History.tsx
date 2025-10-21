@@ -33,11 +33,15 @@ const SupervisorHistory = () => {
       if (!user) return;
       try {
         setIsLoading(true);
+        
+        const isManager = user.role === 'manager';
+        
         const [evalData, nursesData, usersData] = await Promise.all([
-          getSupervisorEvaluations(user.id),
+          isManager ? getAllEvaluations() : getSupervisorEvaluations(user.id),
           getAllNurses(),
           getAllUsers(),
         ]);
+
         const sortedData = evalData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         setEvaluations(sortedData);
         setNurses(nursesData);

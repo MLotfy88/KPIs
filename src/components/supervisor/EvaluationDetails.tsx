@@ -35,7 +35,7 @@ const EvaluationDetails = ({ evaluation, isOpen, onClose, supervisors }: Evaluat
 
   if (!evaluation) return null;
 
-  const supervisorName = supervisors.find(s => s.id === evaluation.supervisor_id)?.name || 'غير معروف';
+  const supervisorName = evaluation.supervisor_name || supervisors.find(s => s.id === evaluation.supervisor_id)?.name || 'غير معروف';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

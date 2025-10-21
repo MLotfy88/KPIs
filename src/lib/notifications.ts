@@ -26,7 +26,7 @@ export const notifyNewEvaluation = async (evaluationId: string, nurseName: strin
     await createNotification({
       userId: manager.id,
       message: `تقييم جديد للممرضة ${nurseName} من قبل ${supervisor.name}`,
-      link: `/manager/evaluations/${evaluationId}`,
+      link: `/manager/history`, // Changed to general history page
     });
   }
 };
@@ -36,7 +36,7 @@ export const notifyEvaluationAudited = async (evaluationId: string, nurseName: s
   await createNotification({
     userId: supervisorId,
     message: `تمت مراجعة تقييم الممرضة ${nurseName}. القرار: ${decision}`,
-    link: `/supervisor/history/${evaluationId}`,
+    link: `/supervisor/history`, // Changed to general history page
   });
 };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import KPICard from '@/components/manager/KPICard';
 import PerformanceChart from '@/components/manager/PerformanceChart';
 import CategoryCharts from '@/components/manager/CategoryCharts';
@@ -7,30 +7,24 @@ import NeedsAttention from '@/components/manager/NeedsAttention';
 import { BarChart, Users, Activity, TrendingUp, Loader2 } from 'lucide-react';
 import { getAllEvaluations, getAllNurses } from '@/lib/api';
 import { Evaluation, Nurse } from '@/types';
+import { useQuery } from '@tanstack/react-query'; // Import useQuery
 
 const ManagerDashboard = () => {
-  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
-  const [nurses, setNurses] = useState<Nurse[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // Use React Query to fetch evaluations
+  const { data: evaluations = [], isLoading: isLoadingEvals, isError: isErrorEvals, error: evalsError } = useQuery<Evaluation[]>({
+    queryKey: ['allEvaluations'],
+    queryFn: getAllEvaluations,
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const [evals, allNurses] = await Promise.all([
-          getAllEvaluations(),
-          getAllNurses(),
-        ]);
-        setEvaluations(evals);
-        setNurses(allNurses);
-      } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  // Use React Query to fetch nurses
+  const { data: nurses = [], isLoading: isLoadingNurses, isError: isErrorNurses, error: nursesError } = useQuery<Nurse[]>({
+    queryKey: ['allNurses'],
+    queryFn: getAllNurses,
+  });
+
+  const isLoading = isLoadingEvals || isLoadingNurses;
+  const isError = isErrorEvals || isErrorNurses;
+  const error = evalsError || nursesError;
 
   // --- KPI Calculations ---
   const averageScore = evaluations.length > 0
@@ -86,6 +80,14 @@ const ManagerDashboard = () => {
     return (
       <div className="flex justify-center items-center h-64">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-64 text-red-500">
+        <p>خطأ في تحميل البيانات: {error?.message || 'غير معروف'}</p>
       </div>
     );
   }

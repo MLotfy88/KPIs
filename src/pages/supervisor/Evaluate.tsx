@@ -164,7 +164,7 @@ const Evaluate = () => {
                   تم حفظ تقييم الممرض "{selectedNurse?.name}" بنجاح.
                 </CardDescription>
                 <div className="flex gap-4 justify-center">
-                  <Button onClick={() => navigate('/supervisor/dashboard')}>العودة للوحة التحكم</Button>
+                  <Button onClick={() => navigate(user?.role === 'manager' ? '/manager/dashboard' : '/supervisor/dashboard')}>العودة للوحة التحكم</Button>
                   <Button
                     variant="outline"
                     onClick={() => {

@@ -502,18 +502,15 @@ const NursesPage: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedNurses.map((nurse) => (
+            {paginatedNurses.map((nurse) => {
+              const avatarUrl = nurse.photo_url || `https://api.dicebear.com/8.x/${nurse.gender === 'male' ? 'adventurer' : 'fun-emoji'}/svg?seed=${encodeURIComponent(nurse.name)}`;
+              return (
               <TableRow key={nurse.id}>
                 <TableCell>
                   <Avatar>
-                    <AvatarImage src={nurse.photo_url} alt={nurse.name} loading="lazy" />
-                    <AvatarFallback className="bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                      {!nurse.photo_url && (
-                        nurse.gender === 'female' 
-                          ? <UserRound className="w-5 h-5 text-gray-500" /> 
-                          : <User className="w-5 h-5 text-gray-500" />
-                      )}
-                      {nurse.photo_url && nurse.name.charAt(0)}
+                    <AvatarImage src={avatarUrl} alt={nurse.name} loading="lazy" />
+                    <AvatarFallback className="bg-gray-200 dark:bg-gray-700">
+                      {nurse.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                 </TableCell>
@@ -564,7 +561,7 @@ const NursesPage: React.FC = () => {
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+            )})}
           </TableBody>
           </Table>
         </div>

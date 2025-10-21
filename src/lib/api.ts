@@ -28,7 +28,7 @@ export const getActiveNurses = async (): Promise<Nurse[]> => {
 };
 
 export const getEvaluationItems = async (evaluationType?: 'weekly' | 'monthly'): Promise<EvaluationItem[]> => {
-  let query = supabase.from('evaluation_items').select('*');
+  let query = supabase.from('evaluation_items').select('*, rubrics, evaluation_types');
 
   if (evaluationType) {
     query = query.contains('evaluation_types', [evaluationType]);

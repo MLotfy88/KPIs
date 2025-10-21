@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,12 +8,19 @@ import { getSupervisorEvaluations } from '@/lib/api';
 import { format, isThisMonth, getMonth, getYear } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { Evaluation } from '@/types';
+import { useQuery } from '@tanstack/react-query'; // Import useQuery
 
 const SupervisorDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [allEvaluations, setAllEvaluations] = useState<Evaluation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  // Use React Query to fetch evaluations
+  const { data: allEvaluations = [], isLoading, isError, error } = useQuery<Evaluation[]>({
+    queryKey: ['supervisorEvaluations', user?.id],
+    queryFn: () => getSupervisorEvaluations(user!.id),
+    enabled: !!user?.id, // Only fetch if user.id is available
+    select: (data) => data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()), // Sort data
+  });
 
   const recentEvaluations = useMemo(() => {
     return allEvaluations.slice(0, 5);
@@ -41,25 +48,6 @@ const SupervisorDashboard = () => {
     };
   }, [allEvaluations]);
 
-
-  useEffect(() => {
-    const fetchEvaluations = async () => {
-      if (!user) return;
-
-      try {
-        setIsLoading(true);
-        const data = await getSupervisorEvaluations(user.id);
-        const sortedData = data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        setAllEvaluations(sortedData);
-      } catch (error) {
-        console.error('Error fetching evaluations:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchEvaluations();
-  }, [user]);
 
   const handleLogout = async () => {
     await logout();
@@ -156,6 +144,8 @@ const SupervisorDashboard = () => {
               <div className="flex justify-center items-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
+            ) : isError ? (
+              <p className="text-red-500 text-center py-8">خطأ في تحميل التقييمات: {error?.message || 'غير معروف'}</p>
             ) : recentEvaluations.length === 0 ? (
               <p className="text-muted-foreground text-center py-8">
                 لم تقم بأي تقييمات بعد

@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Icon from '@/components/ui/Icon';
 import { twMerge } from 'tailwind-merge';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 
 // A dedicated component for rendering scores with stock-market style
 const StockTickerCell = ({ value, change, isMonthly = false }: { value: number | null, change: number | null, isMonthly?: boolean }) => {
@@ -56,99 +56,29 @@ const LeaderboardPage = () => {
   }, []);
 
   const handleExportPDF = async () => {
-    const doc = new jsPDF({
-      orientation: 'landscape',
-    });
+    const input = document.getElementById('leaderboard-table');
+    if (!input) {
+      console.error("Leaderboard table element not found!");
+      return;
+    }
 
     try {
-      // Fetch the font from the public folder
-      const fontResponse = await fetch('/Tajawal Regular.ttf');
-      const fontBlob = await fontResponse.blob();
-      const reader = new FileReader();
+      const canvas = await html2canvas(input, { scale: 2, useCORS: true, logging: true });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+      });
 
-      reader.onloadend = () => {
-        const base64Font = (reader.result as string).split(',')[1];
-        
-        doc.addFileToVFS('Tajawal-Regular.ttf', base64Font);
-        doc.addFont('Tajawal-Regular.ttf', 'Tajawal', 'normal');
-        doc.setFont('Tajawal');
-
-        generatePdfContent(doc);
-      };
-
-      reader.readAsDataURL(fontBlob);
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save('leaderboard.pdf');
 
     } catch (e) {
-      console.error("Failed to fetch or process font. PDF will use standard fonts.", e);
-      // Generate PDF with default fonts if fetching fails
-      generatePdfContent(doc);
+      console.error("Failed to generate PDF from HTML:", e);
+      setError("فشل في تصدير PDF. يرجى المحاولة مرة أخرى.");
     }
   };
-
-  const generatePdfContent = (doc: jsPDF) => {
-    const head = [[
-      { content: 'الإجمالي الشهري', styles: { halign: 'center' } },
-      { content: 'الأسبوع 4', styles: { halign: 'center' } },
-      { content: 'الأسبوع 3', styles: { halign: 'center' } },
-      { content: 'الأسبوع 2', styles: { halign: 'center' } },
-      { content: 'الأسبوع 1', styles: { halign: 'center' } },
-      { content: 'الممرض', styles: { halign: 'right' } },
-      { content: 'الترتيب', styles: { halign: 'center' } },
-    ]];
-
-    const body = leaderboard.map((entry, index) => [
-      { content: entry.monthly_score?.toFixed(2) || '-', styles: { halign: 'center', fontStyle: 'bold' } },
-      { content: entry.week4_score?.toFixed(2) || '-', styles: { halign: 'center' } },
-      { content: entry.week3_score?.toFixed(2) || '-', styles: { halign: 'center' } },
-      { content: entry.week2_score?.toFixed(2) || '-', styles: { halign: 'center' } },
-      { content: entry.week1_score?.toFixed(2) || '-', styles: { halign: 'center' } },
-      { content: entry.nurse_name, styles: { halign: 'right' } },
-      { content: index + 1, styles: { halign: 'center', fontStyle: 'bold' } },
-    ]);
-
-    autoTable(doc, {
-      head: head,
-      body: body,
-      styles: {
-        font: 'Tajawal',
-        cellPadding: 3,
-        fontSize: 10,
-      },
-      headStyles: {
-        fillColor: [22, 163, 74], // green-600
-        textColor: 255,
-        fontStyle: 'bold',
-      },
-      didParseCell: function (data) {
-        // Reverse column order for RTL display
-        if (data.row.section === 'body' || data.row.section === 'head') {
-            data.row.cells = Object.values(data.row.cells).reverse();
-        }
-      },
-      // Color rows and text based on performance change
-      didDrawCell: (data) => {
-        if (data.section === 'body') {
-          const entry = leaderboard[data.row.index];
-          const changes = [entry.monthly_change, entry.week4_change, entry.week3_change, entry.week2_change, entry.week1_change];
-          // The order is reversed in the PDF, so we need to access the change correctly
-          const reversedIndex = (changes.length - 1) - data.column.index;
-          const change = changes[reversedIndex];
-
-          if (change !== null && change !== undefined) {
-            if (change > 0) {
-              doc.setTextColor(34, 197, 94); // green-500
-            } else if (change < 0) {
-              doc.setTextColor(239, 68, 68); // red-500
-            } else {
-              doc.setTextColor(34, 197, 94); // green-500 for neutral
-            }
-          }
-        }
-      },
-    });
-
-    doc.save('leaderboard.pdf');
-  }
 
   if (isLoading) return <div className="text-center p-10">جاري تحميل لوحة الدرجات...</div>;
   if (error) return <div className="text-center p-10 text-red-500">خطأ: {error}</div>;
@@ -157,7 +87,7 @@ const LeaderboardPage = () => {
     <div className="w-full page-container" dir="rtl">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div className="text-right">
-          <h1 className="text-3xl font-bold">لوحة البورصة الشهرية</h1>
+          <h1 className="text-3xl font-bold">لوحة التقييم الشهرية</h1>
           <p className="text-muted-foreground mt-1">مؤشرات الأداء لفريق التمريض مقارنة بالشهر السابق.</p>
         </div>
         <Button variant="outline" onClick={handleExportPDF} className="mt-4 sm:mt-0">
@@ -166,7 +96,7 @@ const LeaderboardPage = () => {
         </Button>
       </header>
       
-      <div className="leaderboard-container border rounded-lg">
+      <div id="leaderboard-table" className="leaderboard-container border rounded-lg">
         <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <TableHeader className="bg-gray-50 dark:bg-gray-800">
             <TableRow>

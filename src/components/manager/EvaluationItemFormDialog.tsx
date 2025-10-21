@@ -21,7 +21,11 @@ const EvaluationItemFormDialog = ({ isOpen, onClose, onSave, item }: EvaluationI
 
   useEffect(() => {
     if (item) {
-      setFormData(item);
+      setFormData({
+        ...item,
+        rubrics: item.rubrics || { '1': '', '2': '', '3': '', '4': '', '5': '' },
+        evaluation_types: item.evaluation_types || ['monthly'],
+      });
     } else {
       setFormData({
         question: '',
